@@ -30,11 +30,18 @@
           :url "https://github.com/emacsmirror/dot-mode.git"
           :features dot-mode
           )
-   rainbow-mode
+   rainbow-mode         ; pretty css colors, etc
+   smooth-scrolling
+   (:name rainbow-delimiters  ;; borked
+          :type http
+          :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
+          :features rainbow-delimiters)
+   
    (:name pretty-mode
           :type git
           :url "https://github.com/mattharrison/pretty-mode.git"
           :features pretty-mode)
+   
    (:name point-stack
           :type git
           :url "https://github.com/mattharrison/point-stack.git"
@@ -43,11 +50,17 @@
                    (global-set-key '[(f5)] 'point-stack-push)
                    (global-set-key '[(f6)] 'point-stack-pop)
                    (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
+
    (:name my-tango-theme
           :type git
           :url "https://github.com/mattharrison/emacs-tango-theme.git"
           :features tango-theme)
 
+   (:name python
+          :after (lambda ()
+                   (add-hook 'python-mode-hook
+                             (lambda ()
+                               (define-key python-mode-map "\C-m" 'newline-and-indent)))))
    ))
 
 ;; install new packages and init already installed packages
