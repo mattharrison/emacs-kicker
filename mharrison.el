@@ -309,7 +309,11 @@ and choosing a simple theme."
  '(backward-delete-char-untabify-method 'all))
 ;; use M-\ for forward hungry delete
 
+;; Kill trailing whitespace
+(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 
+;; centralize backups
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 
 
 
