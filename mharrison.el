@@ -287,8 +287,33 @@ and choosing a simple theme."
   (if my-temp-var (insert "__"))
   (self-insert-command 1))
 (require 'python)
-(define-key	python-mode-map (kbd ".")	'python-self-insert-command)
-(define-key	python-mode-map (kbd "SPC")	'python-self-insert-command)
-(define-key	python-mode-map (kbd "(")	'python-self-insert-command)
+;; (define-key	python-mode-map (kbd ".")	'python-self-insert-command)
+;; (define-key	python-mode-map (kbd "SPC")	'python-self-insert-command)
+;; (define-key	python-mode-map (kbd "(")	'python-self-insert-command)
+
+(defun my-insert-self ()
+  "Insert self. at the beginning of the current word."
+  (interactive)
+  (save-excursion
+    (search-backward-regexp
+     "[
+ \t,(-]\\|^")
+    (if (not (looking-at "^"))
+        (forward-char))
+    (insert "self.")))
+
+(define-key	python-mode-map	(kbd "C-;")	'my-insert-self)
+
+;; make backward delete whitespace hungry
+(custom-set-variables
+ '(backward-delete-char-untabify-method 'all))
+;; use M-\ for forward hungry delete
+
+
+
+
+
+
+
 
 
