@@ -320,8 +320,9 @@ and choosing a simple theme."
 ;; centralize backups
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 
-
-
+;;
+;; kill ping while C-x C-f (emacs-starter-kit issue #39)
+(setq ido-use-filename-at-point nil)
 
 
 
