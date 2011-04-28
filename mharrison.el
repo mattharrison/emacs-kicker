@@ -66,6 +66,8 @@
                    (add-hook 'python-mode-hook
                              (lambda ()
                                (define-key python-mode-map "\C-m" 'newline-and-indent)))))
+
+   sudo-save
    ))
 
 ;; install new packages and init already installed packages
