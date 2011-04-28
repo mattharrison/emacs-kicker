@@ -322,7 +322,7 @@ and choosing a simple theme."
 
 ;;
 ;; kill ping while C-x C-f (emacs-starter-kit issue #39)
-(setq ido-use-filename-at-point nil)
+(setq ffap-machine-p-known 'reject)
 
 
 
