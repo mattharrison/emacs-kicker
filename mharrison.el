@@ -36,12 +36,11 @@
           :type http
           :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
           :features rainbow-delimiters)
-   
+
    (:name pretty-mode
           :type git
           :url "https://github.com/mattharrison/pretty-mode.git"
           :features pretty-mode)
-   
    (:name point-stack
           :type git
           :url "https://github.com/mattharrison/point-stack.git"
@@ -51,10 +50,16 @@
                    (global-set-key '[(f6)] 'point-stack-pop)
                    (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
 
-   (:name my-tango-theme
+   (:name tango-theme
           :type git
           :url "https://github.com/mattharrison/emacs-tango-theme.git"
-          :features tango-theme)
+          :after (lambda () (if (eq window-system 'x)
+                            (color-theme-tango)
+
+                        (if (not (window-system))
+                            (color-theme-tty-dark))))
+          :features tango-theme
+          )
 
    (:name python
           :after (lambda ()
@@ -130,7 +135,7 @@
 ;; scrolly stuff
 ;; http://emacs-fu.blogspot.com/2009/12/scrolling.html
 (setq
- scroll-margin 0                  
+ scroll-margin 0
  scroll-conservatively 100000
  scroll-preserve-screen-position 1)
 
@@ -243,7 +248,7 @@ compilation-error-regexp-alist-alist."
 (insert (format-time-string "%a, %e %b %Y, %k:%M" (current-time)))'")
 
 (defun darkroom-mode ()
-	"Make things simple-looking by removing decoration 
+	"Make things simple-looking by removing decoration
 and choosing a simple theme."
         (interactive)
         (setq left-margin 10)
