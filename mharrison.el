@@ -7,12 +7,14 @@
    escreen                ; screen for emacs, C-\ C-h
    switch-window          ; take over C-x o
    ;auto-complete
+   yasnippet
                                         ;yasnippet emacs-starter-kit python has these
    full-ack
    minimap
    (:name pycoverage
           :type git
-          :url "https://github.com/mattharrison/pycoverage.el.git")
+          :url "https://github.com/mattharrison/pycoverage.el.git"
+   	  :features pycov2)
    (:name pomodoro
           :type http
           :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
@@ -20,10 +22,10 @@
 
 
    (:name smex				; a better (ido like) M-x
-	  :after (lambda ()
-		   (setq smex-save-file "~/.emacs.d/.smex-items")
-		   (global-set-key (kbd "M-x") 'smex)
-		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+   	  :after (lambda ()
+   		   (setq smex-save-file "~/.emacs.d/.smex-items")
+   		   (global-set-key (kbd "M-x") 'smex)
+   		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
 
    (:name dot-mode
           :type git
@@ -32,10 +34,10 @@
           )
    rainbow-mode         ; pretty css colors, etc
    smooth-scrolling
-   (:name rainbow-delimiters  ;; borked
-          :type http
-          :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
-          :features rainbow-delimiters)
+   ;; (:name rainbow-delimiters  ;; borked
+   ;;        :type http
+   ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
+   ;;        :features rainbow-delimiters)
 
    (:name pretty-mode
           :type git
@@ -49,7 +51,7 @@
                    (global-set-key '[(f5)] 'point-stack-push)
                    (global-set-key '[(f6)] 'point-stack-pop)
                    (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
-
+   color-theme
    (:name tango-theme
           :type git
           :url "https://github.com/mattharrison/emacs-tango-theme.git"
@@ -60,12 +62,36 @@
                             (color-theme-tty-dark))))
           :features tango-theme
           )
-
-   (:name python
-          :after (lambda ()
-                   (add-hook 'python-mode-hook
-                             (lambda ()
-                               (define-key python-mode-map "\C-m" 'newline-and-indent)))))
+   ;;python
+   python-mode
+   python-pep8
+   (:name flymake-python
+	  :type git
+	  :url "https://github.com/mattharrison/flymake-python.git"
+	  :after (lambda ()
+		   (add-hook 'find-file-hook 'flymake-find-file-hook)
+		   (when (load "flymake" t)
+		     (defun flymake-pylint-init ()
+		       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+					  'flymake-create-temp-inplace))
+			      (local-file (file-relative-name
+					   temp-file
+					   (file-name-directory buffer-file-name))))
+			 (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+		     ;;     check path
+		     (add-to-list 'flymake-allowed-file-name-masks
+				  '("\\.py\\'" flymake-pylint-init)))) 
+	  )
+   ;; (:name emacs-for-python
+   ;; 	  :type git
+   ;; 	  :url "https://github.com/gabrielelanaro/emacs-for-python.git"
+   ;; 	  :require epy-init
+   ;; 	  )
+   ;; (:name python
+   ;;        :after (lambda ()
+   ;;                 (add-hook 'python-mode-hook
+   ;;                           (lambda ()
+   ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
    sudo-save
    ))
@@ -127,6 +153,8 @@
 (transient-mark-mode t)
 (setq case-fold-search t)
 (blink-cursor-mode 0)
+(scroll-bar-mode nil)
+(menu-bar-mode nil)
 
 (custom-set-variables
  '(indent-tabs-mode nil))
@@ -294,9 +322,9 @@ and choosing a simple theme."
   (if my-temp-var (insert "__"))
   (self-insert-command 1))
 (require 'python)
-;; (define-key	python-mode-map (kbd ".")	'python-self-insert-command)
-;; (define-key	python-mode-map (kbd "SPC")	'python-self-insert-command)
-;; (define-key	python-mode-map (kbd "(")	'python-self-insert-command)
+(define-key	python-mode-map (kbd ".")	'python-self-insert-command)
+(define-key	python-mode-map (kbd "SPC")	'python-self-insert-command)
+(define-key	python-mode-map (kbd "(")	'python-self-insert-command)
 
 (defun my-insert-self ()
   "Insert self. at the beginning of the current word."
