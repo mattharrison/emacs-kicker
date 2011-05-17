@@ -1,3 +1,10 @@
+;; turn off early (like starter-kit)
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(set-default-font "Envy Code R-10")
+
+
 (add-to-list 'load-path "~/work/emacs/el-get")
 
 (require 'el-get)
@@ -6,11 +13,30 @@
  '(el-get
    escreen                ; screen for emacs, C-\ C-h
    switch-window          ; take over C-x o
-   ;auto-complete
-   yasnippet
+   auto-complete
+   (:name yasnippet
+       :type svn
+       :url "http://yasnippet.googlecode.com/svn/trunk/"
+       :features yasnippet
+       :post-init (lambda ()
+		    (yas/initialize)
+		    (add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
+		    (add-to-list 'yas/snippet-dirs "~/work/python/emacs-for-python/extensions/yasnippet/snippets")
+
+		    (yas/reload-all)))
                                         ;yasnippet emacs-starter-kit python has these
    full-ack
    minimap
+   highlight-parentheses
+   highlight-indentation
+   (:name hungry-delete
+          :type git
+          :url "https://github.com/nflath/hungry-delete.git"
+          :features hungry-delete
+          ;;:require 'hungry-delete
+          ;; :after (lambda ()
+          ;;          (turn-on-hungry-delete-mode))
+    )
    (:name pycoverage
           :type git
           :url "https://github.com/mattharrison/pycoverage.el.git"
@@ -62,38 +88,68 @@
                             (color-theme-tty-dark))))
           :features tango-theme
           )
-   ;;python
-   python-mode
-   python-pep8
-   (:name flymake-python
-	  :type git
-	  :url "https://github.com/mattharrison/flymake-python.git"
-	  :after (lambda ()
-		   (add-hook 'find-file-hook 'flymake-find-file-hook)
-		   (when (load "flymake" t)
-		     (defun flymake-pylint-init ()
-		       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-					  'flymake-create-temp-inplace))
-			      (local-file (file-relative-name
-					   temp-file
-					   (file-name-directory buffer-file-name))))
-			 (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-		     ;;     check path
-		     (add-to-list 'flymake-allowed-file-name-masks
-				  '("\\.py\\'" flymake-pylint-init)))) 
-	  )
-   ;; (:name emacs-for-python
-   ;; 	  :type git
-   ;; 	  :url "https://github.com/gabrielelanaro/emacs-for-python.git"
-   ;; 	  :require epy-init
-   ;; 	  )
+
+   (:name emacs-for-python
+       :type git
+       :url "git://github.com/gabrielelanaro/emacs-for-python.git"
+       :load-path "."
+       :post-init (lambda ()
+   		    (require 'epy-setup)
+   		    (require 'epy-python)
+   		    (require 'epy-completion))
+       )
    ;; (:name python
    ;;        :after (lambda ()
-   ;;                 (add-hook 'python-mode-hook
+   ;; 		   (message "PYTHON@!")
+   ;; 		   (add-hook 'python-mode-hook
    ;;                           (lambda ()
+
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
+   python-mode
+   ;;python
+
+   ;; (:name python
+   ;; 	  :type git
+   ;; 	  :url "https://github.com/fgallina/python.el.git"
+   ;; 	  :require 'python)
+
+
+   python-pep8
+   (:name flymake-python
+   	  :type git
+   	  :url "https://github.com/mattharrison/flymake-python.git"
+   	  :after (lambda ()
+   		   (add-hook 'find-file-hook 'flymake-find-file-hook)
+   		   (when (load "flymake" t)
+   		     (defun flymake-pylint-init ()
+   		       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+   					  'flymake-create-temp-inplace))
+   			      (local-file (file-relative-name
+   					   temp-file
+   					   (file-name-directory buffer-file-name))))
+   			 (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+   		     ;;     check path
+   		     (add-to-list 'flymake-allowed-file-name-masks
+   				  '("\\.py\\'" flymake-pylint-init))))
+   	  )
+
+   virtualenv
+   ;;mmm-mode
+   (:name nxhtml
+          :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
+          )
+   ;; this is for html mmm editing
+   ;;django-mode
+   ;; this is for django nav
+   (:name django-mode2
+          :type git
+          :url "https://github.com/myfreeweb/django-mode.git"
+          :after (lambda()
+                   (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
+                   (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
    sudo-save
+   undo-tree
    ))
 
 ;; install new packages and init already installed packages
@@ -148,13 +204,10 @@
 (setq use-file-dialog nil)
 (setq use-dialog-box nil)
 (fset 'yes-or-no-p 'y-or-n-p)
-(tool-bar-mode -1)
 (show-paren-mode 1)
 (transient-mark-mode t)
 (setq case-fold-search t)
 (blink-cursor-mode 0)
-(scroll-bar-mode nil)
-(menu-bar-mode nil)
 
 (custom-set-variables
  '(indent-tabs-mode nil))
@@ -169,7 +222,6 @@
  scroll-conservatively 100000
  scroll-preserve-screen-position 1)
 
-(set-default-font "Envy Code R-10")
 
 ;; make shift arrows move between windows
 ;; http://justinsboringpage.blogspot.com/2009/09/directional-window-movement-in-emacs.html
@@ -300,9 +352,12 @@ and choosing a simple theme."
 ;; google gadget
 (add-to-list 'auto-mode-alist '("\\.gg\\'" . archive-mode))
 
+;; (add-to-list 'load-path "~/.emacs.d/el-get/python")
+;; (require 'python)
+
 
 ;; from https://github.com/nflath/emacs-repos/blob/master/internal/python.el
-(defun python-self-insert-command ()
+(defun python-insert-end-dunder ()
   "Appends __ to the current word if it started with __."
   (interactive)
   (save-excursion
@@ -321,12 +376,8 @@ and choosing a simple theme."
           (setq my-temp-var nil))))
   (if my-temp-var (insert "__"))
   (self-insert-command 1))
-(require 'python)
-(define-key	python-mode-map (kbd ".")	'python-self-insert-command)
-(define-key	python-mode-map (kbd "SPC")	'python-self-insert-command)
-(define-key	python-mode-map (kbd "(")	'python-self-insert-command)
 
-(defun my-insert-self ()
+(defun python-insert-start-self ()
   "Insert self. at the beginning of the current word."
   (interactive)
   (save-excursion
@@ -337,11 +388,20 @@ and choosing a simple theme."
         (forward-char))
     (insert "self.")))
 
-(define-key	python-mode-map	(kbd "C-;")	'my-insert-self)
+(load "~/.emacs.d/el-get/python/python.el")
+(require 'python)
+(add-hook 'python-mode-hook
+	  (lambda ()
+            (hungry-delete-mode)
+	    (define-key	python-mode-map (kbd ".")	'python-insert-end-dunder)
+	    (define-key	python-mode-map (kbd "SPC")	'python-insert-end-dunder)
+	    (define-key	python-mode-map (kbd "(")	'python-insert-end-dunder)
+	    (define-key	python-mode-map	(kbd "C-;")	'python-insert-start-self)))
+
 
 ;; make backward delete whitespace hungry
-(custom-set-variables
- '(backward-delete-char-untabify-method 'all))
+;; (custom-set-variables
+;;  '(backward-delete-char-untabify-method 'all))
 ;; use M-\ for forward hungry delete
 
 ;; Kill trailing whitespace
@@ -355,5 +415,46 @@ and choosing a simple theme."
 (setq ffap-machine-p-known 'reject)
 
 
+;; starter-kit copies
+(require 'cl)
+(require 'saveplace)
+(require 'ffap)
+(require 'ansi-color)
+(require 'recentf)
 
+;; make shell colors work
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
+;; http://emacs-fu.blogspot.com/2009/11/making-buffer-names-unique.html
+(require 'uniquify)
+(setq
+  uniquify-buffer-name-style 'post-forward
+  uniquify-separator ":")
+
+;; coda swap  http://en.myfreeweb.ru/coda-like-swapping-in-emacs
+(defun coda-swap (expr)
+  (interactive "sExpr: ")
+  (query-replace-regexp
+   (replace-regexp-in-string "$[1-2]" "\\\\([0-9a-zA-Z]*\\\\)" expr)
+   (replace-regexp-in-string "$[1-2]" (lambda (m) (if (equal m "$1") "\\\\2" "\\\\1")) expr)))
+
+;; Example:
+; enter
+; width="$1" height="$2"
+; and it will replace
+; width="240" height="320"
+; with
+; width="320" height="240"
+
+;; from https://github.com/myfreeweb/emacs/blob/master/useful-stuff.el
+;;; FIXME/TODO/BUG/XXX highlight
+(defun markers-hl ()
+  (font-lock-add-keywords nil
+                          '(("\\<\\(FIXME\\|TODO\\|BUG\\|XXX\\):" 1 font-lock-warning-face t))))
+(add-hook 'python-mode-hook 'markers-hl)
+(add-hook 'ruby-mode-hook 'markers-hl)
+(add-hook 'perl-mode-hook 'markers-hl)
+(add-hook 'js-mode-hook 'markers-hl)
+(add-hook 'css-mode-hook 'markers-hl)
+(add-hook 'coffee-mode-hook 'markers-hl)
+(add-hook 'nxml-mode-hook 'markers-hl)
