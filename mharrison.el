@@ -106,8 +106,8 @@
 
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
-   python-mode
-   ;;python
+   ;;python-mode
+   python
 
    ;; (:name python
    ;; 	  :type git
@@ -140,16 +140,22 @@
           :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
           )
    ;; this is for html mmm editing
-   ;;django-mode
+   django-mode
    ;; this is for django nav
    (:name django-mode2
           :type git
           :url "https://github.com/myfreeweb/django-mode.git"
           :after (lambda()
+                   (require 'django-html-mode)
+                   ;; (require 'django-mode)
                    (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
                    (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
    sudo-save
    undo-tree
+   (:name perspective
+          :type git
+          :url "https://github.com/nex3/perspective-el.git"
+          )
    ))
 
 ;; install new packages and init already installed packages
