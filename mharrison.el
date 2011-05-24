@@ -156,6 +156,23 @@
           :type git
           :url "https://github.com/nex3/perspective-el.git"
           )
+   (:name sr-speedbar
+          :type emacswiki)
+   (:name idle-highlight-mode
+          :type git
+          :url "https://github.com/emacsmirror/idle-highlight-mode.git"
+          )
+
+   ;; javascript stuff
+   ;; don't use yegge's use better indent version
+   (:name js2-mode
+       :type git
+       :url "https://github.com/mooz/js2-mode.git"
+       :compile "js2-mode.el"
+       :post-init (lambda ()
+                    (autoload 'js2-mode "js2-mode" nil t)))
+
+
    ))
 
 ;; install new packages and init already installed packages
