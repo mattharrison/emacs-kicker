@@ -257,7 +257,9 @@
  scroll-margin 0
  scroll-conservatively 100000
  scroll-preserve-screen-position 1)
-
+;; scroll by line
+(global-set-key (kbd "<M-up>") (lambda () (interactive) (scroll-down 1)))
+(global-set-key (kbd "<M-down>") (lambda () (interactive) (scroll-up 1)))
 
 ;; make shift arrows move between windows
 ;; http://justinsboringpage.blogspot.com/2009/09/directional-window-movement-in-emacs.html
