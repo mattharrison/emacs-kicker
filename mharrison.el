@@ -25,17 +25,18 @@
         full-ack
         minimap
         highlight-parentheses
-        highlight-indentation   
+        highlight-indentation
         rainbow-mode         ; pretty css colors, etc
         smooth-scrolling
-        ;;color-theme  ;; borked
+        color-theme  ;; borked
         python
         python-pep8
         virtualenv
         ;; this is for html mmm editing
         django-mode
         sudo-save
-        undo-tree))
+        undo-tree
+	predictive))
 
 (setq el-get-sources
       '(
@@ -108,16 +109,17 @@
                    (global-set-key '[(f6)] 'point-stack-pop)
                    (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
 
-   ;; (:name tango-theme
-   ;;        :type git
-   ;;        :url "https://github.com/mattharrison/emacs-tango-theme.git"
-   ;;        :after (lambda () (if (eq window-system 'x)
-   ;;                          (color-theme-tango)
+   (:name tango-theme
+          :type git
+	  :depends color-theme
+          :url "https://github.com/mattharrison/emacs-tango-theme.git"
+          :after (lambda () (if (eq window-system 'x)
+				(color-theme-tango)
 
-   ;;                      (if (not (window-system))
-   ;;                          (color-theme-tty-dark))))
-   ;;        :features tango-theme
-   ;;        )
+                        (if (not (window-system))
+                            (color-theme-tty-dark))))
+          :features tango-theme
+          )
    ;; color-theme-solarized
    ;; (:name python
    ;;        :after (lambda ()
