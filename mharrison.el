@@ -5,28 +5,62 @@
 (set-default-font "Envy Code R-10")
 
 (add-to-list 'load-path "~/work/emacs/el-get")
+
+;;(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil t)
+  (url-retrieve
+   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
+   (lambda (s)
+     (end-of-buffer)
+     (eval-print-last-sexp))))
+
 (require 'el-get)
-(setq
- el-get-sources
- '(el-get
-   escreen                ; screen for emacs, C-\ C-h
-   switch-window          ; take over C-x o
-   auto-complete
-   (:name yasnippet
+
+(setq my:el-get-packages
+      '(
+        escreen                ; screen for emacs, C-\ C-h
+        switch-window          ; take over C-x o
+        auto-complete
+        full-ack
+        minimap
+        highlight-parentheses
+        highlight-indentation   
+        rainbow-mode         ; pretty css colors, etc
+        smooth-scrolling
+        ;;color-theme  ;; borked
+        python
+        python-pep8
+        virtualenv
+        ;; this is for html mmm editing
+        django-mode
+        sudo-save
+        undo-tree))
+
+(setq el-get-sources
+      '(
+        ;; (:name emacs-for-python
+        ;;        :type git
+        ;;        :url "git://github.com/gabrielelanaro/emacs-for-python.git"
+        ;;        :load-path "."
+        ;;        :post-init (lambda ()
+        ;;                     (require 'epy-setup)
+        ;;                     (require 'epy-python)
+        ;;                     (require 'epy-completion))
+        ;;        )
+
+        (:name yasnippet
        :type svn
        :url "http://yasnippet.googlecode.com/svn/trunk/"
        :features yasnippet
        :post-init (lambda ()
 		    (yas/initialize)
 		    (add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
-		    (add-to-list 'yas/snippet-dirs "~/work/python/emacs-for-python/extensions/yasnippet/snippets")
+		    ;; (add-to-list 'yas/snippet-dirs "~/work/python/emacs-for-python/extensions/yasnippet/snippets")
 
 		    (yas/reload-all)))
                                         ;yasnippet emacs-starter-kit python has these
-   full-ack
-   minimap
-   highlight-parentheses
-   highlight-indentation
+
    (:name hungry-delete
           :type git
           :url "https://github.com/nflath/hungry-delete.git"
@@ -56,8 +90,6 @@
           :url "https://github.com/emacsmirror/dot-mode.git"
           :features dot-mode
           )
-   rainbow-mode         ; pretty css colors, etc
-   smooth-scrolling
    ;; (:name rainbow-delimiters  ;; borked
    ;;        :type http
    ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
@@ -75,27 +107,18 @@
                    (global-set-key '[(f5)] 'point-stack-push)
                    (global-set-key '[(f6)] 'point-stack-pop)
                    (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
-   color-theme
-   (:name tango-theme
-          :type git
-          :url "https://github.com/mattharrison/emacs-tango-theme.git"
-          :after (lambda () (if (eq window-system 'x)
-                            (color-theme-tango)
 
-                        (if (not (window-system))
-                            (color-theme-tty-dark))))
-          :features tango-theme
-          )
+   ;; (:name tango-theme
+   ;;        :type git
+   ;;        :url "https://github.com/mattharrison/emacs-tango-theme.git"
+   ;;        :after (lambda () (if (eq window-system 'x)
+   ;;                          (color-theme-tango)
+
+   ;;                      (if (not (window-system))
+   ;;                          (color-theme-tty-dark))))
+   ;;        :features tango-theme
+   ;;        )
    ;; color-theme-solarized
-   (:name emacs-for-python
-       :type git
-       :url "git://github.com/gabrielelanaro/emacs-for-python.git"
-       :load-path "."
-       :post-init (lambda ()
-   		    (require 'epy-setup)
-   		    (require 'epy-python)
-   		    (require 'epy-completion))
-       )
    ;; (:name python
    ;;        :after (lambda ()
    ;; 		   (message "PYTHON@!")
@@ -105,7 +128,7 @@
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
    ;;python-mode
-   python
+
 
    ;; (:name python
    ;; 	  :type git
@@ -113,7 +136,7 @@
    ;; 	  :require 'python)
 
 
-   python-pep8
+
    (:name flymake-python
    	  :type git
    	  :url "https://github.com/mattharrison/flymake-python.git"
@@ -132,7 +155,7 @@
    				  '("\\.py\\'" flymake-pylint-init))))
    	  )
 
-   virtualenv
+
    ;; trying out emacs-for-python virtualenv
    ;;mmm-mode
    (:name nxhtml
@@ -143,8 +166,6 @@
           :url "https://github.com/davidmiller/pony-mode.git"
           :after (lambda()
                    (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
-   ;; this is for html mmm editing
-   django-mode
    ;; this is for django nav
    (:name django-mode2
           :type git
@@ -160,8 +181,6 @@
           :url "https://github.com/mattharrison/nose.git"
           :after (lambda() ))
 
-   sudo-save
-   undo-tree
    (:name perspective
           :type git
           :url "https://github.com/nex3/perspective-el.git"
@@ -189,11 +208,15 @@
           :type git
           :url "https://github.com/bnbeckwith/writegood-mode.git"
           :features writegood-mode )
-
-
    ))
+
+(setq my:el-get-packages
+      (append
+       my:el-get-packages
+       (loop for src in el-get-sources collect (el-get-source-name src))))
+
 ;; install new packages and init already installed packages
-(el-get 'sync)
+(el-get 'sync my:el-get-packages)
 
 ;; Use the clipboard, pretty please, so that copy/paste "works"
 (setq x-select-enable-clipboard t)
@@ -329,20 +352,20 @@ by using nxml's indentation rules."
           (cons x
                 (assq-delete-all (car x)
                                  compilation-error-regexp-alist-alist)))))
-(matt-add-global-compilation-errors
- `(
-   (matt-python ,(concat "^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1"
-                        ", lines? \\([0-9]+\\)-?\\([0-9]+\\)?")
-               2 (3 . 4) nil 2 2)
-   (matt-pdb-stack ,(concat "^>?[[:space:]]*\\(\\([-_./a-zA-Z0-9 ]+\\)"
-                           "(\\([0-9]+\\))\\)"
-                           "[_a-zA-Z0-9]+()[[:space:]]*->")
-                  2 3 nil 0 1)
-   (matt-python-unittest-err "^  File \"\\([-_./a-zA-Z0-9 ]+\\)\", line \\([0-9]+\\).*" 1 2)
-   )
-;; We rule out filenames starting with < as these aren't files.
-;; (pdb "^> *\\([^(< ][^(]*\\)(\\([0-9]+\\))" 1 2)
-)
+;; (matt-add-global-compilation-errors
+;;  `(
+;;    (matt-python ,(concat "^ *File \\(\"?\\)\\([^,\" \n    <>]+\\)\\1"
+;;                         ", lines? \\([0-9]+\\)-?\\([0-9]+\\)?")
+;;                2 (3 . 4) nil 2 2)
+;;    (matt-pdb-stack ,(concat "^>?[[:space:]]*\\(\\([-_./a-zA-Z0-9 ]+\\)"
+;;                            "(\\([0-9]+\\))\\)"
+;;                            "[_a-zA-Z0-9]+()[[:space:]]*->")
+;;                   2 3 nil 0 1)
+;;    (matt-python-unittest-err "^  File \"\\([-_./a-zA-Z0-9 ]+\\)\", line \\([0-9]+\\).*" 1 2)
+;;    )
+;; ;; We rule out filenames starting with < as these aren't files.
+;; ;; (pdb "^> *\\([^(< ][^(]*\\)(\\([0-9]+\\))" 1 2)
+;; )
 
 (defun matt-set-local-compilation-errors (errors)
   "Set the buffer local compilation errors.
@@ -426,8 +449,8 @@ and choosing a simple theme."
         (forward-char))
     (insert "self.")))
 
-(load "~/.emacs.d/el-get/python/python.el")
-(require 'python)
+;; (load "~/.emacs.d/el-get/python/python.el")
+;; (require 'python)
 (add-hook 'python-mode-hook
 	  (lambda ()
             (hungry-delete-mode)
@@ -522,114 +545,114 @@ and choosing a simple theme."
 
 ;; shell customizations - http://snarfed.org/why_i_run_shells_inside_emacs
 ;;
-(defvar my-shells
-  '("*matt*" "*shell0*" "*shell1*" "*shell2*" "*music*"))
+;; (defvar my-shells
+;;   '("*matt*" "*shell0*" "*shell1*" "*shell2*" "*music*"))
 
-(custom-set-variables
- '(tramp-default-method "ssh")          ; uses ControlMaster
- '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
- '(comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
- '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
- ;; '(comint-completion-autolist t)     ; show completion list when ambiguous
- '(comint-input-ignoredups t)           ; no duplicates in command history
- '(comint-completion-addsuffix t)       ; insert space/slash after file completion
- '(comint-buffer-maximum-size 100000)   ; max length of the buffer in lines
- '(comint-prompt-read-only nil)         ; if this is t, it breaks shell-command
- '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
-                                        ; line above the current prompt
- '(comint-input-ring-size 5000)         ; max shell history size
- '(protect-buffer-bury-p nil)
-)
+;; (custom-set-variables
+;;  '(tramp-default-method "ssh")          ; uses ControlMaster
+;;  '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
+;;  '(comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
+;;  '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
+;;  ;; '(comint-completion-autolist t)     ; show completion list when ambiguous
+;;  '(comint-input-ignoredups t)           ; no duplicates in command history
+;;  '(comint-completion-addsuffix t)       ; insert space/slash after file completion
+;;  '(comint-buffer-maximum-size 100000)   ; max length of the buffer in lines
+;;  '(comint-prompt-read-only nil)         ; if this is t, it breaks shell-command
+;;  '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
+;;                                         ; line above the current prompt
+;;  '(comint-input-ring-size 5000)         ; max shell history size
+;;  '(protect-buffer-bury-p nil)
+;; )
 
-(setenv "PAGER" "cat")
+;; (setenv "PAGER" "cat")
 
-;; truncate buffers continuously
-(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+;; ;; truncate buffers continuously
+;; (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
 
-(defun make-my-shell-output-read-only (text)
-  "Add to comint-output-filter-functions to make stdout read only in my shells."
-  (if (member (buffer-name) my-shells)
-      (let ((inhibit-read-only t)
-            (output-end (process-mark (get-buffer-process (current-buffer)))))
-        (put-text-property comint-last-output-start output-end 'read-only t))))
-(add-hook 'comint-output-filter-functions 'make-my-shell-output-read-only)
+;; (defun make-my-shell-output-read-only (text)
+;;   "Add to comint-output-filter-functions to make stdout read only in my shells."
+;;   (if (member (buffer-name) my-shells)
+;;       (let ((inhibit-read-only t)
+;;             (output-end (process-mark (get-buffer-process (current-buffer)))))
+;;         (put-text-property comint-last-output-start output-end 'read-only t))))
+;; (add-hook 'comint-output-filter-functions 'make-my-shell-output-read-only)
 
-(defun dirtrack-mode-locally ()
-  "Add to shell-mode-hook to use dirtrack mode in my local shell buffers."
-  (when (member (buffer-name) (cdr my-shells))
-    (dirtrack-mode t)
-    (set-variable 'dirtrack-list '("^[A-Za-z0-9]+:\\([~/][^\\n>]*\\)>" 1 nil))))
-(add-hook 'shell-mode-hook 'dirtrack-mode-locally)
+;; (defun dirtrack-mode-locally ()
+;;   "Add to shell-mode-hook to use dirtrack mode in my local shell buffers."
+;;   (when (member (buffer-name) (cdr my-shells))
+;;     (dirtrack-mode t)
+;;     (set-variable 'dirtrack-list '("^[A-Za-z0-9]+:\\([~/][^\\n>]*\\)>" 1 nil))))
+;; (add-hook 'shell-mode-hook 'dirtrack-mode-locally)
 
-; interpret and use ansi color codes in shell output windows
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; ; interpret and use ansi color codes in shell output windows
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-(defun set-scroll-conservatively ()
-  "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
-  (set (make-local-variable 'scroll-conservatively) 10))
-(add-hook 'shell-mode-hook 'set-scroll-conservatively)
+;; (defun set-scroll-conservatively ()
+;;   "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
+;;   (set (make-local-variable 'scroll-conservatively) 10))
+;; (add-hook 'shell-mode-hook 'set-scroll-conservatively)
 
-(defun unset-display-buffer-reuse-frames ()
-  "Add to shell-mode-hook to prevent switching away from the shell buffer
-when emacsclient opens a new buffer."
-  (set (make-local-variable 'display-buffer-reuse-frames) t))
-(add-hook 'shell-mode-hook 'unset-display-buffer-reuse-frames)
+;; (defun unset-display-buffer-reuse-frames ()
+;;   "Add to shell-mode-hook to prevent switching away from the shell buffer
+;; when emacsclient opens a new buffer."
+;;   (set (make-local-variable 'display-buffer-reuse-frames) t))
+;; (add-hook 'shell-mode-hook 'unset-display-buffer-reuse-frames)
 
-;; make it harder to kill my shell buffers
-(require 'protbuf)
-(add-hook 'shell-mode-hook 'protect-buffer-from-kill-mode)
+;; ;; make it harder to kill my shell buffers
+;; (require 'protbuf)
+;; (add-hook 'shell-mode-hook 'protect-buffer-from-kill-mode)
 
-(defun make-comint-directory-tracking-work-remotely ()
-  "Add this to comint-mode-hook to make directory tracking work
-while sshed into a remote host, e.g. for remote shell buffers
-started in tramp. (This is a bug fix backported from Emacs 24:
-http://comments.gmane.org/gmane.emacs.bugs/39082"
-  (set (make-local-variable 'comint-file-name-prefix)
-       (or (file-remote-p default-directory) "")))
-(add-hook 'comint-mode-hook 'make-comint-directory-tracking-work-remotely)
+;; (defun make-comint-directory-tracking-work-remotely ()
+;;   "Add this to comint-mode-hook to make directory tracking work
+;; while sshed into a remote host, e.g. for remote shell buffers
+;; started in tramp. (This is a bug fix backported from Emacs 24:
+;; http://comments.gmane.org/gmane.emacs.bugs/39082"
+;;   (set (make-local-variable 'comint-file-name-prefix)
+;;        (or (file-remote-p default-directory) "")))
+;; (add-hook 'comint-mode-hook 'make-comint-directory-tracking-work-remotely)
 
-(defun comint-close-completions ()
-  "Close close the comint completions buffer.
-Used in advice to various comint functions to automatically close
-the completions buffer as soon as I'm done with it. Based on
-Dmitriy Igrishin <dmitigr@gmail.com>'s patched version of
-comint.el."
-  (if comint-dynamic-list-completions-config
-      (progn
-        (set-window-configuration comint-dynamic-list-completions-config)
-        (setq comint-dynamic-list-completions-config nil))))
+;; (defun comint-close-completions ()
+;;   "Close close the comint completions buffer.
+;; Used in advice to various comint functions to automatically close
+;; the completions buffer as soon as I'm done with it. Based on
+;; Dmitriy Igrishin <dmitigr@gmail.com>'s patched version of
+;; comint.el."
+;;   (if comint-dynamic-list-completions-config
+;;       (progn
+;;         (set-window-configuration comint-dynamic-list-completions-config)
+;;         (setq comint-dynamic-list-completions-config nil))))
 
-(defadvice comint-send-input (after close-completions activate)
-  (comint-close-completions))
+;; (defadvice comint-send-input (after close-completions activate)
+;;   (comint-close-completions))
 
-(defadvice comint-dynamic-complete-as-filename (after close-completions activate)
-  (if ad-return-value (comint-close-completions)))
+;; (defadvice comint-dynamic-complete-as-filename (after close-completions activate)
+;;   (if ad-return-value (comint-close-completions)))
 
-(defadvice comint-dynamic-simple-complete (after close-completions activate)
-  (if (member ad-return-value '('sole 'shortest 'partial))
-      (comint-close-completions)))
+;; (defadvice comint-dynamic-simple-complete (after close-completions activate)
+;;   (if (member ad-return-value '('sole 'shortest 'partial))
+;;       (comint-close-completions)))
 
-(defadvice comint-dynamic-list-completions (after close-completions activate)
-    (comint-close-completions)
-    (if (not unread-command-events)
-        ;; comint's "Type space to flush" swallows space. put it back in.
-        (setq unread-command-events (listify-key-sequence " "))))
+;; (defadvice comint-dynamic-list-completions (after close-completions activate)
+;;     (comint-close-completions)
+;;     (if (not unread-command-events)
+;;         ;; comint's "Type space to flush" swallows space. put it back in.
+;;         (setq unread-command-events (listify-key-sequence " "))))
 
-(defun enter-again-if-enter ()
-  "Make the return key select the current item in minibuf and shell history isearch.
-An alternate approach would be after-advice on isearch-other-meta-char."
-  (when (and (not isearch-mode-end-hook-quit)
-             (equal (this-command-keys-vector) [13])) ; == return
-    (cond ((active-minibuffer-window) (minibuffer-complete-and-exit))
-          ((member (buffer-name) my-shells) (comint-send-input)))))
-(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
+;; (defun enter-again-if-enter ()
+;;   "Make the return key select the current item in minibuf and shell history isearch.
+;; An alternate approach would be after-advice on isearch-other-meta-char."
+;;   (when (and (not isearch-mode-end-hook-quit)
+;;              (equal (this-command-keys-vector) [13])) ; == return
+;;     (cond ((active-minibuffer-window) (minibuffer-complete-and-exit))
+;;           ((member (buffer-name) my-shells) (comint-send-input)))))
+;; (add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
 
-(defadvice comint-previous-matching-input
-    (around suppress-history-item-messages activate)
-  "Suppress the annoying 'History item : NNN' messages from shell history isearch.
-If this isn't enough, try the same thing with
-comint-replace-by-expanded-history-before-point."
-  (let ((old-message (symbol-function 'message)))
-    (unwind-protect
-      (progn (fset 'message 'ignore) ad-do-it)
-    (fset 'message old-message))))
+;; (defadvice comint-previous-matching-input
+;;     (around suppress-history-item-messages activate)
+;;   "Suppress the annoying 'History item : NNN' messages from shell history isearch.
+;; If this isn't enough, try the same thing with
+;; comint-replace-by-expanded-history-before-point."
+;;   (let ((old-message (symbol-function 'message)))
+;;     (unwind-protect
+;;       (progn (fset 'message 'ignore) ad-do-it)
+;;     (fset 'message old-message))))
