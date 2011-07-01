@@ -29,7 +29,8 @@
         rainbow-mode         ; pretty css colors, etc
         smooth-scrolling
         color-theme  ;; borked
-        python
+        ;;python
+	python-mode
         python-pep8
         virtualenv
         ;; this is for html mmm editing
@@ -57,7 +58,7 @@
        :post-init (lambda ()
 		    (yas/initialize)
 		    (add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
-		    ;; (add-to-list 'yas/snippet-dirs "~/work/python/emacs-for-python/extensions/yasnippet/snippets")
+		    (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
 		    (yas/reload-all)))
                                         ;yasnippet emacs-starter-kit python has these
@@ -129,7 +130,7 @@
 
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
-   ;;python-mode
+
 
 
    ;; (:name python
@@ -455,6 +456,8 @@ and choosing a simple theme."
 ;; (require 'python)
 (add-hook 'python-mode-hook
 	  (lambda ()
+	    (setq indent-tabs-mode nil
+		  tab-width 2)
             (hungry-delete-mode)
 	    (define-key	python-mode-map (kbd ".")	'python-insert-end-dunder)
 	    (define-key	python-mode-map (kbd "SPC")	'python-insert-end-dunder)
