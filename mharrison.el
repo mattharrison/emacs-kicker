@@ -528,6 +528,30 @@ and choosing a simple theme."
 ; with
 ; width="320" height="240"
 
+;; C-x C-+ is normal
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C-=") 'text-scale-increase)
+;; (global-set-key (kbd "C--") (lambda () (interactive) (text-scale-adjust -1)))
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; process to save a keyboard macro
+;; record it using f3 and f4 (to signal start/stop)
+;; C-x C-k n  Give a command name (for the duration of the Emacs session) to the most recently defined keyboard macro (kmacro-name-last-macro).
+;;  M-x insert-kbd-macro <RET> macroname <RET>
+;; not used but here for example
+(fset 'rerun-pdb
+      (lambda (&optional arg)
+        "Goto next window.  Kill pdb (gud).  Start pdb and hit
+        the c character to
+        continue" (interactive "p") (kmacro-exec-ring-item (quote ([24
+        111 24 98 103 117 100 return 24 107 return 134217848 112
+        100 98 return return 99 return] 0 "%d")) arg)))
+
+
+;; bind it to f11
+(global-set-key '[(f11)]  'rerun-pdb)
+
+
 ;; from https://github.com/myfreeweb/emacs/blob/master/useful-stuff.el
 ;;; FIXME/TODO/BUG/XXX highlight
 (defun markers-hl ()
@@ -661,3 +685,5 @@ and choosing a simple theme."
 ;;     (unwind-protect
 ;;       (progn (fset 'message 'ignore) ad-do-it)
 ;;     (fset 'message old-message))))
+
+
