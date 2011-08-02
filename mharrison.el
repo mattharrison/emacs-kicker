@@ -2,8 +2,8 @@
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-;; (set-default-font "Envy Code R-10")
-(set-default-font "Inconsolata-8")
+(set-default-font "Envy Code R-10")
+;; (set-default-font "Inconsolata-8")
 
 (add-to-list 'load-path "~/work/emacs/el-get")
 
@@ -737,3 +737,5 @@ and choosing a simple theme."
 ;;     (fset 'message old-message))))
 
 
+
+(put 'ido-exit-minibuffer 'disabled nil)
