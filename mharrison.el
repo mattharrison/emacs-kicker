@@ -2,7 +2,8 @@
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(set-default-font "Envy Code R-10")
+;; (set-default-font "Envy Code R-10")
+(set-default-font "Inconsolata-8")
 
 (add-to-list 'load-path "~/work/emacs/el-get")
 
@@ -37,7 +38,8 @@
         django-mode
         sudo-save
         undo-tree
-	predictive))
+	predictive
+	magit))
 
 (setq el-get-sources
       '(
@@ -106,9 +108,9 @@
           :url "https://github.com/mattharrison/point-stack.git"
           :features point-stack
           :after (lambda ()
-                   (global-set-key '[(f5)] 'point-stack-push)
-                   (global-set-key '[(f6)] 'point-stack-pop)
-                   (global-set-key '[(f7)] 'point-stack-forward-stack-pop)))
+                   (global-set-key [f6] 'point-stack-push)
+                   (global-set-key [f7] 'point-stack-pop)
+                   (global-set-key [f8] 'point-stack-forward-stack-pop)))
 
    (:name tango-theme
           :type git
@@ -167,6 +169,7 @@
    (:name pony-mode
           :type git
           :url "https://github.com/davidmiller/pony-mode.git"
+	  :features pony-mode
           :after (lambda()
                    (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
    ;; this is for django nav
@@ -211,6 +214,15 @@
           :type git
           :url "https://github.com/bnbeckwith/writegood-mode.git"
           :features writegood-mode )
+   (:name monky
+	  :type git
+	  :url "https://github.com/ananthakumaran/monky.git"
+	  :features monky)
+   (:name ace-jump-mode
+	  :website "http://www.emacswiki.org/emacs/AceJump"
+	  :description "a quick cursor location minor mode for emacs"
+	  :type git
+	  :url "https://github.com/winterTTr/ace-jump-mode")
    ))
 
 (setq my:el-get-packages
@@ -246,6 +258,28 @@
 
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
+
+
+;; function keys
+(global-set-key [f5] (lambda nil (interactive) (revert-buffer nil t t) (message (concat "Reverted buffer " (buffer-name)))))
+(global-set-key [C-f6] 'bookmark-set)
+(global-set-key [C-f7] 'bookmark-jump)
+(global-set-key [C-f8] 'bookmark-bmenu-list)
+(global-set-key [f12] (lambda () (interactive) (switch-to-buffer nil)))
+
+;; change cursor on overwrite-mode
+;; http://www.reddit.com/r/emacs/comments/ix6h8/what_do_you_guys_bind_your_functionkeypad_keys_to/
+(setq default-cursor-type '(bar . 2))
+(defadvice overwrite-mode (after overwrite-mode)
+  (if overwrite-mode
+      (setq cursor-type 'box)
+    (setq cursor-type '(bar . 2))))
+(ad-activate 'overwrite-mode)
+
+;; get menu from 3rd mouse button
+(global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
+(global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
+
 
 ;; show flymake problems in minibuffer
 ;; https://gist.github.com/415429
@@ -464,6 +498,13 @@ and choosing a simple theme."
 	    (define-key	python-mode-map (kbd "(")	'python-insert-end-dunder)
 	    (define-key	python-mode-map	(kbd "C-;")	'python-insert-start-self)))
 
+(defun virtualenv-activate (directory)
+"Activate a venv directory (without virtualenv-wrapper)"
+(interactive "DVirtualenv directory")
+(let* ((virtualenv-workon-session (file-name-nondirectory (directory-file-name directory)))
+      (virtualenv-root (file-name-directory (directory-file-name directory))))
+      (virtualenv-workon)))
+
 (defun python-venv-activate (directory)
   "Activate new python.el virtualenv"
   (interactive "DDirectory:")
@@ -512,6 +553,15 @@ and choosing a simple theme."
 (setq
   uniquify-buffer-name-style 'post-forward
   uniquify-separator ":")
+
+
+;; replace elisp with contents
+;; http://stackoverflow.com/questions/3035337/in-emacs-can-you-evaluate-an-elisp-expression-and-replace-it-with-the-result
+(defun replace-last-sexp ()
+  (interactive)
+  (let ((value (eval (preceding-sexp))))
+    (kill-sexp -1)
+    (insert (format "%s" value))))
 
 ;; coda swap  http://en.myfreeweb.ru/coda-like-swapping-in-emacs
 (defun coda-swap (expr)
