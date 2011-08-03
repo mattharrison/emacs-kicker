@@ -57,7 +57,7 @@
        :features yasnippet
        :post-init (lambda ()
 		    (yas/initialize)
-		    (add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
+		    ;;(add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
 		    (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
 		    (yas/reload-all)))
@@ -247,6 +247,19 @@
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 
+(setq matt-font-size 10)
+(defun toggle-font-size (arg)
+  "Toggle font size between 10 and 30 (or prefix variable)"
+  (interactive "p")
+  ;; make this use prefix arg someday...
+  (message "raw prefix arg is %s" arg)
+    (if (= matt-font-size 10)
+	(setq matt-font-size 30)
+      (setq matt-font-size 10))
+      (set-default-font (format "Envy Code R-%d" matt-font-size))
+      (redraw-display))
+(global-set-key '[(f11)]  'toggle-font-size)
+
 ;; show flymake problems in minibuffer
 ;; https://gist.github.com/415429
 (defun my-flymake-show-help ()
@@ -401,8 +414,8 @@ and choosing a simple theme."
         (menu-bar-mode -1)
         (tool-bar-mode -1)
         (scroll-bar-mode -1)
-        (border-width . 0)
-        (internal-border-width . 64)
+        ;;(border-width . 0)
+        ;;(internal-border-width . 64)
         (auto-fill-mode 1))
 ;; need to toggle
 
@@ -504,6 +517,16 @@ and choosing a simple theme."
 (require 'ansi-color)
 (require 'recentf)
 
+;; tango shell
+;; http://tapoueh.org/blog/2011/07/29-emacs-ansi-colors.html
+(setq ansi-color-names-vector
+         (vector (frame-parameter nil 'background-color)
+               "#f57900" "#8ae234" "#edd400" "#729fcf"
+               "#ad7fa8" "cyan3" "#eeeeec")
+         ansi-term-color-vector ansi-color-names-vector
+         ansi-color-map (ansi-color-make-color-map))
+
+
 ;; make shell colors work
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
@@ -549,7 +572,7 @@ and choosing a simple theme."
 
 
 ;; bind it to f11
-(global-set-key '[(f11)]  'rerun-pdb)
+;;(global-set-key '[(f11)]  'rerun-pdb)
 
 
 ;; from https://github.com/myfreeweb/emacs/blob/master/useful-stuff.el
