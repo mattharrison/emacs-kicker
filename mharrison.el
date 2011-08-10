@@ -269,11 +269,11 @@
 
 ;; change cursor on overwrite-mode
 ;; http://www.reddit.com/r/emacs/comments/ix6h8/what_do_you_guys_bind_your_functionkeypad_keys_to/
-(setq default-cursor-type '(bar . 2))
+(setq default-cursor-type 'box)
 (defadvice overwrite-mode (after overwrite-mode)
   (if overwrite-mode
-      (setq cursor-type 'box)
-    (setq cursor-type '(bar . 2))))
+      (setq cursor-type 'bar . 3)
+    (setq cursor-type 'box)))
 (ad-activate 'overwrite-mode)
 
 ;; get menu from 3rd mouse button
@@ -297,7 +297,7 @@
 
 ;; when I paste with mouse, do it at click (and not at point)
 (setq mouse-yank-at-point nil)
-
+(global-hl-line-mode 1)
 (global-font-lock-mode 1)
 (setq inhibit-splash-screen t)
 (setq font-lock-maximum-decoration 3)
@@ -493,6 +493,7 @@ and choosing a simple theme."
 	    (setq indent-tabs-mode nil
 		  tab-width 2)
             (hungry-delete-mode)
+	    (idle-highlight-mode t)
 	    (define-key	python-mode-map (kbd ".")	'python-insert-end-dunder)
 	    (define-key	python-mode-map (kbd "SPC")	'python-insert-end-dunder)
 	    (define-key	python-mode-map (kbd "(")	'python-insert-end-dunder)
