@@ -5,41 +5,16 @@
 (set-default-font "Envy Code R-10")
 ;; (set-default-font "Inconsolata-8")
 
-(add-to-list 'load-path "~/work/emacs/el-get")
-
-;;(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+;;(add-to-list 'load-path "~/work/emacs/el-get")
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
 (unless (require 'el-get nil t)
-  (url-retrieve
-   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
-   (lambda (s)
+(url-retrieve
+ "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+ (lambda (s)
+   (let (el-get-master-branch)
      (end-of-buffer)
-     (eval-print-last-sexp))))
-
-(require 'el-get)
-
-(setq my:el-get-packages
-      '(
-        escreen                ; screen for emacs, C-\ C-h
-        switch-window          ; take over C-x o
-        auto-complete
-        full-ack
-        minimap
-        highlight-parentheses
-        highlight-indentation
-        rainbow-mode         ; pretty css colors, etc
-        smooth-scrolling
-        color-theme  ;; borked
-        ;;python
-	python-mode
-        python-pep8
-        virtualenv
-        ;; this is for html mmm editing
-        django-mode
-        sudo-save
-        undo-tree
-	predictive
-	magit))
+     (eval-print-last-sexp)))))
 
 (setq el-get-sources
       '(
@@ -53,26 +28,26 @@
         ;;                     (require 'epy-completion))
         ;;        )
 
-        (:name yasnippet
-       :type svn
-       :url "http://yasnippet.googlecode.com/svn/trunk/"
-       :features yasnippet
-       :post-init (lambda ()
-		    (yas/initialize)
-		    ;;(add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
-		    (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+       ;;  (:name yasnippet
+       ;; :type svn
+       ;; :url "http://yasnippet.googlecode.com/svn/trunk/"
+       ;; :features yasnippet
+       ;; :post-init (lambda ()
+       ;; 		    (yas/initialize)
+       ;; 		    ;;(add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
+       ;; 		    (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
-		    (yas/reload-all)))
-                                        ;yasnippet emacs-starter-kit python has these
+       ;; 		    (yas/reload-all)))
+       ;;                                  ;yasnippet emacs-starter-kit python has these
 
-   (:name hungry-delete
-          :type git
-          :url "https://github.com/nflath/hungry-delete.git"
-          :features hungry-delete
-          ;;:require 'hungry-delete
-          ;; :after (lambda ()
-          ;;          (turn-on-hungry-delete-mode))
-    )
+   ;; (:name hungry-delete
+   ;;        :type git
+   ;;        :url "https://github.com/nflath/hungry-delete.git"
+   ;;        :features hungry-delete
+   ;;        ;;:require 'hungry-delete
+   ;;        ;; :after (lambda ()
+   ;;        ;;          (turn-on-hungry-delete-mode))
+   ;;  )
    (:name pycoverage
           :type git
           :url "https://github.com/mattharrison/pycoverage.el.git"
@@ -141,7 +116,12 @@
    ;; 	  :require 'python)
 
 
-
+   (:name python-mode
+	  :require 'doctest-mode)
+   (:name doctest-mode
+	  :type http
+	  :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
+	  :features doctest-mode)
    (:name flymake-python
    	  :type git
    	  :url "https://github.com/mattharrison/flymake-python.git"
@@ -173,14 +153,15 @@
           :after (lambda()
                    (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
    ;; this is for django nav
-   (:name django-mode2
-          :type git
-          :url "https://github.com/myfreeweb/django-mode.git"
-          :after (lambda()
-                   (require 'django-html-mode)
-                   ;; (require 'django-mode)
-                   (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
-                   (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
+   ;; (:name django-mode2
+   ;;        :type git
+   ;;        :url "https://github.com/myfreeweb/django-mode.git"
+   ;; 	  :depends yasnippet
+   ;;        :after (lambda()
+   ;;                 (require 'django-html-mode)
+   ;;                 ;; (require 'django-mode)
+   ;;                 (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
+   ;;                 (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
 
    (:name nose
           :type git
@@ -223,15 +204,43 @@
 	  :description "a quick cursor location minor mode for emacs"
 	  :type git
 	  :url "https://github.com/winterTTr/ace-jump-mode")
+   (:name nyan-mode
+	  :website "http://nyan-mode.buildsomethingamazing.com/"
+	  :description "cat indicator"
+	  :type git
+	  :url "https://github.com/TeMPOraL/nyan-mode"
+	  :features nyan-mode)
    ))
 
-(setq my:el-get-packages
+(setq my-packages
       (append
-       my:el-get-packages
-       (loop for src in el-get-sources collect (el-get-source-name src))))
+       '(
+	 el-get
+        escreen                ; screen for emacs, C-\ C-h
+        switch-window          ; take over C-x o
+        auto-complete
+        full-ack
+        minimap
+        highlight-parentheses
+        highlight-indentation
+        rainbow-mode         ; pretty css colors, etc
+        smooth-scrolling
+        color-theme  ;; borked
+        ;;python
+	;;python-mode
+        python-pep8
+        virtualenv
+        ;; this is for html mmm editing
+        ;;django-mode
+        sudo-save
+        undo-tree
+	;;predictive
+	magit
+	lua-mode
+	)
+       (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
-;; install new packages and init already installed packages
-(el-get 'sync my:el-get-packages)
+(el-get 'sync my-packages)
 
 ;; Use the clipboard, pretty please, so that copy/paste "works"
 (setq x-select-enable-clipboard t)
@@ -283,12 +292,13 @@
 
 ;; change cursor on overwrite-mode
 ;; http://www.reddit.com/r/emacs/comments/ix6h8/what_do_you_guys_bind_your_functionkeypad_keys_to/
-(setq default-cursor-type 'box)
-(defadvice overwrite-mode (after overwrite-mode)
-  (if overwrite-mode
-      (setq cursor-type 'bar . 3)
-    (setq cursor-type 'box)))
-(ad-activate 'overwrite-mode)
+;; throws - Error: Wrong type argument: listp, 3
+;; (setq default-cursor-type 'box)
+;; (defadvice overwrite-mode (after overwrite-mode)
+;;   (if overwrite-mode
+;;       (setq cursor-type 'bar . 3)
+;;     (setq cursor-type 'box)))
+;; (ad-activate 'overwrite-mode)
 
 ;; get menu from 3rd mouse button
 (global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
@@ -324,7 +334,6 @@
 (blink-cursor-mode 0)
 (line-number-mode 1)
 (column-number-mode 1)
-
 ;; scrolly stuff
 ;; http://emacs-fu.blogspot.com/2009/12/scrolling.html
 (setq
