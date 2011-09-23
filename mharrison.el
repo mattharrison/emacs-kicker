@@ -18,7 +18,7 @@
 
 (setq el-get-sources
       '(
-        ;; (:name emacs-for-python
+       ;; (:name emacs-for-python
         ;;        :type git
         ;;        :url "git://github.com/gabrielelanaro/emacs-for-python.git"
         ;;        :load-path "."
@@ -27,18 +27,11 @@
         ;;                     (require 'epy-python)
         ;;                     (require 'epy-completion))
         ;;        )
-
-       ;;  (:name yasnippet
-       ;; :type svn
-       ;; :url "http://yasnippet.googlecode.com/svn/trunk/"
-       ;; :features yasnippet
-       ;; :post-init (lambda ()
-       ;; 		    (yas/initialize)
-       ;; 		    ;;(add-to-list 'yas/snippet-dirs (concat el-get-dir "yasnippet/snippets"))
-       ;; 		    (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
-
-       ;; 		    (yas/reload-all)))
-       ;;                                  ;yasnippet emacs-starter-kit python has these
+        (:name yasnippet
+         :after (lambda()
+		      (yas/initialize)
+		      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+		      (yas/reload-all)))
 
    ;; (:name hungry-delete
    ;;        :type git
@@ -51,18 +44,18 @@
    (:name pycoverage
           :type git
           :url "https://github.com/mattharrison/pycoverage.el.git"
-   	  :features pycov2)
+          :features pycov2)
    (:name pomodoro
           :type http
           :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
 
 
 
-   (:name smex				; a better (ido like) M-x
-   	  :after (lambda ()
-   		   (setq smex-save-file "~/.emacs.d/.smex-items")
-   		   (global-set-key (kbd "M-x") 'smex)
-   		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+   (:name smex                          ; a better (ido like) M-x
+          :after (lambda ()
+                   (setq smex-save-file "~/.emacs.d/.smex-items")
+                   (global-set-key (kbd "M-x") 'smex)
+                   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
 
    (:name dot-mode
           :type git
@@ -89,10 +82,10 @@
 
    (:name tango-theme
           :type git
-	  :depends color-theme
+          :depends color-theme
           :url "https://github.com/mattharrison/emacs-tango-theme.git"
           :after (lambda () (if (eq window-system 'x)
-				(color-theme-tango)
+                                (color-theme-tango)
 
                         (if (not (window-system))
                             (color-theme-tty-dark))))
@@ -101,8 +94,8 @@
    ;; color-theme-solarized
    ;; (:name python
    ;;        :after (lambda ()
-   ;; 		   (message "PYTHON@!")
-   ;; 		   (add-hook 'python-mode-hook
+   ;;              (message "PYTHON@!")
+   ;;              (add-hook 'python-mode-hook
    ;;                           (lambda ()
 
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
@@ -111,34 +104,34 @@
 
 
    ;; (:name python
-   ;; 	  :type git
-   ;; 	  :url "https://github.com/fgallina/python.el.git"
-   ;; 	  :require 'python)
+   ;;     :type git
+   ;;     :url "https://github.com/fgallina/python.el.git"
+   ;;     :require 'python)
 
 
    (:name python-mode
-	  :require 'doctest-mode)
+          :require 'doctest-mode)
    (:name doctest-mode
-	  :type http
-	  :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
-	  :features doctest-mode)
+          :type http
+          :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
+          :features doctest-mode)
    (:name flymake-python
-   	  :type git
-   	  :url "https://github.com/mattharrison/flymake-python.git"
-   	  :after (lambda ()
-   		   (add-hook 'find-file-hook 'flymake-find-file-hook)
-   		   (when (load "flymake" t)
-   		     (defun flymake-pylint-init ()
-   		       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-   					  'flymake-create-temp-inplace))
-   			      (local-file (file-relative-name
-   					   temp-file
-   					   (file-name-directory buffer-file-name))))
-   			 (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-   		     ;;     check path
-   		     (add-to-list 'flymake-allowed-file-name-masks
-   				  '("\\.py\\'" flymake-pylint-init))))
-   	  )
+          :type git
+          :url "https://github.com/mattharrison/flymake-python.git"
+          :after (lambda ()
+                   (add-hook 'find-file-hook 'flymake-find-file-hook)
+                   (when (load "flymake" t)
+                     (defun flymake-pylint-init ()
+                       (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                          'flymake-create-temp-inplace))
+                              (local-file (file-relative-name
+                                           temp-file
+                                           (file-name-directory buffer-file-name))))
+                         (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+                     ;;     check path
+                     (add-to-list 'flymake-allowed-file-name-masks
+                                  '("\\.py\\'" flymake-pylint-init))))
+          )
 
 
    ;; trying out emacs-for-python virtualenv
@@ -149,14 +142,14 @@
    (:name pony-mode
           :type git
           :url "https://github.com/davidmiller/pony-mode.git"
-	  :features pony-mode
+          :features pony-mode
           :after (lambda()
                    (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
    ;; this is for django nav
    ;; (:name django-mode2
    ;;        :type git
    ;;        :url "https://github.com/myfreeweb/django-mode.git"
-   ;; 	  :depends yasnippet
+   ;;     :depends yasnippet
    ;;        :after (lambda()
    ;;                 (require 'django-html-mode)
    ;;                 ;; (require 'django-mode)
@@ -196,26 +189,26 @@
           :url "https://github.com/bnbeckwith/writegood-mode.git"
           :features writegood-mode )
    (:name monky
-	  :type git
-	  :url "https://github.com/ananthakumaran/monky.git"
-	  :features monky)
+          :type git
+          :url "https://github.com/ananthakumaran/monky.git"
+          :features monky)
    (:name ace-jump-mode
-	  :website "http://www.emacswiki.org/emacs/AceJump"
-	  :description "a quick cursor location minor mode for emacs"
-	  :type git
-	  :url "https://github.com/winterTTr/ace-jump-mode")
+          :website "http://www.emacswiki.org/emacs/AceJump"
+          :description "a quick cursor location minor mode for emacs"
+          :type git
+          :url "https://github.com/winterTTr/ace-jump-mode")
    (:name nyan-mode
-	  :website "http://nyan-mode.buildsomethingamazing.com/"
-	  :description "cat indicator"
-	  :type git
-	  :url "https://github.com/TeMPOraL/nyan-mode"
-	  :features nyan-mode)
+          :website "http://nyan-mode.buildsomethingamazing.com/"
+          :description "cat indicator"
+          :type git
+          :url "https://github.com/TeMPOraL/nyan-mode"
+          :features nyan-mode)
    ))
 
 (setq my-packages
       (append
        '(
-	 el-get
+         el-get
         escreen                ; screen for emacs, C-\ C-h
         switch-window          ; take over C-x o
         auto-complete
@@ -226,18 +219,19 @@
         rainbow-mode         ; pretty css colors, etc
         smooth-scrolling
         color-theme  ;; borked
-        ;;python
-	;;python-mode
+        python
+        ;;python-mode
         python-pep8
         virtualenv
         ;; this is for html mmm editing
         ;;django-mode
         sudo-save
         undo-tree
-	;;predictive
-	magit
-	lua-mode
-	)
+        ;;predictive
+        magit
+        lua-mode
+        ;;yasnippet
+        )
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
 (el-get 'sync my-packages)
@@ -276,7 +270,7 @@
   ;; make this use prefix arg someday...
   (message "raw prefix arg is %s" arg)
     (if (= matt-font-size 10)
-	(setq matt-font-size 30)
+        (setq matt-font-size 30)
       (setq matt-font-size 10))
       (set-default-font (format "Envy Code R-%d" matt-font-size))
       (redraw-display))
@@ -451,7 +445,7 @@ compilation-error-regexp-alist-alist."
 (insert (format-time-string "%a, %e %b %Y, %k:%M" (current-time)))'")
 
 (defun darkroom-mode ()
-	"Make things simple-looking by removing decoration
+        "Make things simple-looking by removing decoration
 and choosing a simple theme."
         (interactive)
         (setq left-margin 10)
@@ -509,18 +503,18 @@ and choosing a simple theme."
         (forward-char))
     (insert "self.")))
 
+;;(yas/load-directory "~/work/emacs/emacs-kicker/snippets")
 ;; (load "~/.emacs.d/el-get/python/python.el")
 ;; (require 'python)
 (add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq indent-tabs-mode nil
-		  tab-width 2)
-            (hungry-delete-mode)
-	    (idle-highlight-mode t)
-	    (define-key	python-mode-map (kbd ".")	'python-insert-end-dunder)
-	    (define-key	python-mode-map (kbd "SPC")	'python-insert-end-dunder)
-	    (define-key	python-mode-map (kbd "(")	'python-insert-end-dunder)
-	    (define-key	python-mode-map	(kbd "C-;")	'python-insert-start-self)))
+          (lambda ()
+            (setq indent-tabs-mode nil
+                  tab-width 2)
+            (idle-highlight-mode t)
+            (define-key         python-mode-map (kbd ".")       'python-insert-end-dunder)
+            (define-key         python-mode-map (kbd "SPC")     'python-insert-end-dunder)
+            (define-key         python-mode-map (kbd "(")       'python-insert-end-dunder)
+            (define-key         python-mode-map         (kbd "C-;")     'python-insert-start-self)))
 
 (defun virtualenv-activate (directory)
 "Activate a venv directory (without virtualenv-wrapper)"
