@@ -3,6 +3,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (set-default-font "Envy Code R-10")
+;;(set-default-font "Ubuntu Mono-11")
 ;; (set-default-font "Inconsolata-8")
 
 ;;(add-to-list 'load-path "~/work/emacs/el-get")
@@ -109,8 +110,8 @@
    ;;     :require 'python)
 
 
-   (:name python-mode
-          :require 'doctest-mode)
+   ;; (:name python-mode
+   ;;        :require 'doctest-mode)
    (:name doctest-mode
           :type http
           :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
@@ -219,8 +220,8 @@
         rainbow-mode         ; pretty css colors, etc
         smooth-scrolling
         color-theme  ;; borked
-        python
-        ;;python-mode
+        ;;python
+        python-mode
         python-pep8
         virtualenv
         ;; this is for html mmm editing
@@ -466,6 +467,11 @@ and choosing a simple theme."
 (add-to-list 'auto-mode-alist '("\\.xo\\'" . archive-mode))
 ;; google gadget
 (add-to-list 'auto-mode-alist '("\\.gg\\'" . archive-mode))
+;; java
+(add-to-list 'auto-mode-alist '("\\.war\\'" . archive-mode))
+(add-to-list 'auto-mode-alist '("\\.jar\\'" . archive-mode))
+;;
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . archive-mode))
 
 ;; (add-to-list 'load-path "~/.emacs.d/el-get/python")
 ;; (require 'python)
