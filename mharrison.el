@@ -50,8 +50,6 @@
           :type http
           :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
 
-
-
    (:name smex                          ; a better (ido like) M-x
           :after (lambda ()
                    (setq smex-save-file "~/.emacs.d/.smex-items")
@@ -101,14 +99,10 @@
 
    ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
-
-
-
    ;; (:name python
    ;;     :type git
    ;;     :url "https://github.com/fgallina/python.el.git"
    ;;     :require 'python)
-
 
    ;; (:name python-mode
    ;;        :require 'doctest-mode)
@@ -133,7 +127,6 @@
                      (add-to-list 'flymake-allowed-file-name-masks
                                   '("\\.py\\'" flymake-pylint-init))))
           )
-
 
    ;; trying out emacs-for-python virtualenv
    ;;mmm-mode
@@ -176,7 +169,6 @@
           :type emacswiki
           :features protbuf)
 
-
    ;; javascript stuff
    ;; don't use yegge's use better indent version
    (:name js2-mode
@@ -210,28 +202,30 @@
       (append
        '(
          el-get
-        escreen                ; screen for emacs, C-\ C-h
-        switch-window          ; take over C-x o
-        auto-complete
-        full-ack
-        minimap
-        highlight-parentheses
-        highlight-indentation
-        rainbow-mode         ; pretty css colors, etc
-        smooth-scrolling
-        color-theme  ;; borked
-        ;;python
-        python-mode
-        python-pep8
-        virtualenv
-        ;; this is for html mmm editing
-        ;;django-mode
-        sudo-save
-        undo-tree
-        ;;predictive
-        magit
-        lua-mode
-        ;;yasnippet
+	 ;;yasnippet
+	 ;; this is for html mmm editing
+	 ;;django-mode
+	 ;;predictive
+	 ;;python
+	 ;;yasnippet
+	 auto-complete
+	 color-theme  ;; borked
+	 csv-mode
+	 escreen                ; screen for emacs, C-\ C-h
+	 full-ack
+	 highlight-indentation
+	 highlight-parentheses
+	 lua-mode
+	 magit
+	 minimap
+	 python-mode
+	 python-pep8
+         rainbow-mode         ; pretty css colors, etc
+         smooth-scrolling
+         sudo-save
+         switch-window          ; take over C-x o
+         undo-tree
+         virtualenv
         )
        (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
 
