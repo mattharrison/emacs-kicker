@@ -333,6 +333,8 @@
 (global-set-key (kbd "<M-up>") (lambda () (interactive) (scroll-down 1)))
 (global-set-key (kbd "<M-down>") (lambda () (interactive) (scroll-up 1)))
 
+(setq-default c-basic-offset 4)
+
 ;; make shift arrows move between windows
 ;; http://justinsboringpage.blogspot.com/2009/09/directional-window-movement-in-emacs.html
 (windmove-default-keybindings)
