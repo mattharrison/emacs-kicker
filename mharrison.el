@@ -334,6 +334,12 @@
 (global-set-key (kbd "<M-down>") (lambda () (interactive) (scroll-up 1)))
 
 (setq-default c-basic-offset 4)
+;; for c indentation like this:
+;; function
+;; {
+;;     bar
+;; }
+;; need (setq c-default-style "bsd")
 
 ;; make shift arrows move between windows
 ;; http://justinsboringpage.blogspot.com/2009/09/directional-window-movement-in-emacs.html
