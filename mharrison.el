@@ -28,11 +28,50 @@
         ;;                     (require 'epy-python)
         ;;                     (require 'epy-completion))
         ;;        )
+
         (:name yasnippet
-         :after (lambda()
-		      (yas/initialize)
-		      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
-		      (yas/reload-all)))
+       :website "http://code.google.com/p/yasnippet/"
+       :description "YASnippet is a template system for Emacs."
+       :type git
+       :url "https://github.com/mattharrison/yasnippet.git"
+       :features "yasnippet"
+       :prepare (lambda ()
+                      ;; Set up the default snippets directory
+                      ;;
+                      ;; Principle: don't override any user settings
+                      ;; for yas/snippet-dirs, whether those were made
+                      ;; with setq or customize.  If the user doesn't
+                      ;; want the default snippets, she shouldn't get
+                      ;; them!
+                      (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
+                        (setq yas/snippet-dirs
+                              (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
+
+       :post-init (lambda ()
+                      ;; Trick customize into believing the standard
+                      ;; value includes the default snippets.
+                      ;; yasnippet would probably do this itself,
+                      ;; except that it doesn't include an
+                      ;; installation procedure that sets up the
+                      ;; snippets directory, and thus doesn't know
+                      ;; where those snippets will be installed.  See
+                      ;; http://code.google.com/p/yasnippet/issues/detail?id=179
+                      (put 'yas/snippet-dirs 'standard-value
+                           ;; as cus-edit.el specifies, "a cons-cell
+                           ;; whose car evaluates to the standard
+                           ;; value"
+                           (list (list 'quote
+                                 (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
+       ;; byte-compile load vc-svn and that fails
+       ;; see https://github.com/dimitri/el-get/issues/200
+       :compile nil)
+
+        ;; (:name yasnippet
+        ;;        :url "https://github.com/mattharrison/yasnippet.git")
+         ;; :after (lambda()
+		 ;;      (yas/initialize)
+		 ;;      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+		 ;;      (yas/reload-all)))
 
    ;; (:name hungry-delete
    ;;        :type git
@@ -257,6 +296,9 @@
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 
+;; disable C-z on X11 sessions
+(when window-system
+  (global-unset-key "\C-z"))
 
 (setq matt-font-size 10)
 (defun toggle-font-size (arg)
@@ -339,7 +381,10 @@
 ;; {
 ;;     bar
 ;; }
-;; need (setq c-default-style "bsd")
+;; need
+(setq-default c-basic-offset 4
+	      tab-width 4
+	      indent-tabs-mode nil)
 
 ;; make shift arrows move between windows
 ;; http://justinsboringpage.blogspot.com/2009/09/directional-window-movement-in-emacs.html
