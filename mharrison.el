@@ -552,6 +552,24 @@ and choosing a simple theme."
 		       t nil))
       (widen))))
 
+;; https://gist.github.com/1475626
+(defun nkv/stop-here (pos)
+  (interactive "d")
+  (let (
+        (trace-command "import pdb; pdb.set_trace()"))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (search-forward trace-command nil t)
+        (beginning-of-line)
+        (kill-line 1)))
+    (beginning-of-line)
+    (insert (concat trace-command "\n"))
+    (forward-line -1)
+    (indent-for-tab-command)))
+
+
 ;; from https://github.com/nflath/emacs-repos/blob/master/internal/python.el
 (defun python-insert-end-dunder ()
   "Appends __ to the current word if it started with __."
@@ -592,6 +610,7 @@ and choosing a simple theme."
             (setq indent-tabs-mode nil
                   tab-width 2)
             (idle-highlight-mode t)
+            (define-key         python-mode-map (kdb "C-c C-b") 'nkv/stop-here)
             (define-key         python-mode-map (kbd ".")       'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "SPC")     'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "(")       'python-insert-end-dunder)
@@ -709,6 +728,7 @@ and choosing a simple theme."
 
 ;; bind it to f11
 ;;(global-set-key '[(f11)]  'rerun-pdb)
+
 
 
 ;; from https://github.com/myfreeweb/emacs/blob/master/useful-stuff.el
