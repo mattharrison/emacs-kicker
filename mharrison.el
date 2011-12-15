@@ -17,7 +17,7 @@
      (end-of-buffer)
      (eval-print-last-sexp)))))
 
-(add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+;;(add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
 (setq el-get-sources
       '(
@@ -262,7 +262,7 @@
 	 python-mode
 	 python-pep8
          rainbow-mode         ; pretty css colors, etc
-	 sass-mode
+	 ;;sass-mode
          smooth-scrolling
          sudo-save
          switch-window          ; take over C-x o
