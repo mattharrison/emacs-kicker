@@ -259,6 +259,15 @@
                              ((looking-at (regexp-opt (list (string omark) (string qmark))))
                               (forward-char 1))
                              (t ad-do-it))))
+
+                        ;; from iso-trans.el
+                        ;; ‘C-x 8 SPC gives a hard space.
+                        ;; ‘C-x 8 o gives ° (degree symbol).
+                        ;; ‘C-x 8 ~ ~ gives ¬.
+                        ;; ‘C-x 8 1 / 2 gives ½.
+                        ;; ‘C-x 8 * C gives ©.
+                        ;; ‘C-x 8 ^ 1 gives superscript ¹, ‘C-x 8 ^ 2’ gives superscript ², and ‘C-x 8 ^ 3’ gives superscript ³.
+
                         ))
 
    ;; javascript stuff
