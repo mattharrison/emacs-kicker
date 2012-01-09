@@ -259,7 +259,7 @@
                              ((looking-at (regexp-opt (list (string omark) (string qmark))))
                               (forward-char 1))
                              (t ad-do-it))))
-
+                        ;; C-q " gives a normal " (when in typopunct mode)
                         ;; from iso-trans.el
                         ;; ‘C-x 8 SPC gives a hard space.
                         ;; ‘C-x 8 o gives ° (degree symbol).
