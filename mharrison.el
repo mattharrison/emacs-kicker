@@ -10,18 +10,18 @@
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
 (unless (require 'el-get nil t)
-(url-retrieve
- "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
- (lambda (s)
-   (let (el-get-master-branch)
-     (end-of-buffer)
-     (eval-print-last-sexp)))))
+  (url-retrieve
+   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+   (lambda (s)
+     (let (el-get-master-branch)
+       (end-of-buffer)
+       (eval-print-last-sexp)))))
 
 ;;(add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
 (setq el-get-sources
       '(
-       ;; (:name emacs-for-python
+        ;; (:name emacs-for-python
         ;;        :type git
         ;;        :url "git://github.com/gabrielelanaro/emacs-for-python.git"
         ;;        :load-path "."
@@ -32,183 +32,234 @@
         ;;        )
 
         (:name yasnippet
-       :website "http://code.google.com/p/yasnippet/"
-       :description "YASnippet is a template system for Emacs."
-       :type git
-       :url "https://github.com/mattharrison/yasnippet.git"
-       :features "yasnippet"
-       :prepare (lambda ()
-                      ;; Set up the default snippets directory
-                      ;;
-                      ;; Principle: don't override any user settings
-                      ;; for yas/snippet-dirs, whether those were made
-                      ;; with setq or customize.  If the user doesn't
-                      ;; want the default snippets, she shouldn't get
-                      ;; them!
-                      (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
-                        (setq yas/snippet-dirs
-                              (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
+               :website "http://code.google.com/p/yasnippet/"
+               :description "YASnippet is a template system for Emacs."
+               :type git
+               :url "https://github.com/mattharrison/yasnippet.git"
+               :features "yasnippet"
+               :prepare (lambda ()
+                          ;; Set up the default snippets directory
+                          ;;
+                          ;; Principle: don't override any user settings
+                          ;; for yas/snippet-dirs, whether those were made
+                          ;; with setq or customize.  If the user doesn't
+                          ;; want the default snippets, she shouldn't get
+                          ;; them!
+                          (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
+                            (setq yas/snippet-dirs
+                                  (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
 
-       :post-init (lambda ()
-                      ;; Trick customize into believing the standard
-                      ;; value includes the default snippets.
-                      ;; yasnippet would probably do this itself,
-                      ;; except that it doesn't include an
-                      ;; installation procedure that sets up the
-                      ;; snippets directory, and thus doesn't know
-                      ;; where those snippets will be installed.  See
-                      ;; http://code.google.com/p/yasnippet/issues/detail?id=179
-                      (put 'yas/snippet-dirs 'standard-value
-                           ;; as cus-edit.el specifies, "a cons-cell
-                           ;; whose car evaluates to the standard
-                           ;; value"
-                           (list (list 'quote
-                                 (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
-       ;; byte-compile load vc-svn and that fails
-       ;; see https://github.com/dimitri/el-get/issues/200
-       :compile nil)
+               :post-init (lambda ()
+                            ;; Trick customize into believing the standard
+                            ;; value includes the default snippets.
+                            ;; yasnippet would probably do this itself,
+                            ;; except that it doesn't include an
+                            ;; installation procedure that sets up the
+                            ;; snippets directory, and thus doesn't know
+                            ;; where those snippets will be installed.  See
+                            ;; http://code.google.com/p/yasnippet/issues/detail?id=179
+                            (put 'yas/snippet-dirs 'standard-value
+                                 ;; as cus-edit.el specifies, "a cons-cell
+                                 ;; whose car evaluates to the standard
+                                 ;; value"
+                                 (list (list 'quote
+                                             (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
+               ;; byte-compile load vc-svn and that fails
+               ;; see https://github.com/dimitri/el-get/issues/200
+               :compile nil)
 
         ;; (:name yasnippet
         ;;        :url "https://github.com/mattharrison/yasnippet.git")
-         ;; :after (lambda()
-		 ;;      (yas/initialize)
-		 ;;      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
-		 ;;      (yas/reload-all)))
+        ;; :after (lambda()
+        ;;      (yas/initialize)
+        ;;      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+        ;;      (yas/reload-all)))
 
-   ;; (:name hungry-delete
-   ;;        :type git
-   ;;        :url "https://github.com/nflath/hungry-delete.git"
-   ;;        :features hungry-delete
-   ;;        ;;:require 'hungry-delete
-   ;;        ;; :after (lambda ()
-   ;;        ;;          (turn-on-hungry-delete-mode))
-   ;;  )
-   (:name pycoverage
-          :type git
-          :url "https://github.com/mattharrison/pycoverage.el.git"
-          :features pycov2)
-   (:name pomodoro
-          :type http
-          :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
+        ;; (:name hungry-delete
+        ;;        :type git
+        ;;        :url "https://github.com/nflath/hungry-delete.git"
+        ;;        :features hungry-delete
+        ;;        ;;:require 'hungry-delete
+        ;;        ;; :after (lambda ()
+        ;;        ;;          (turn-on-hungry-delete-mode))
+        ;;  )
+        (:name pycoverage
+               :type git
+               :url "https://github.com/mattharrison/pycoverage.el.git"
+               :features pycov2)
+        (:name pomodoro
+               :type http
+               :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
 
-   (:name smex                          ; a better (ido like) M-x
-          :after (lambda ()
-                   (setq smex-save-file "~/.emacs.d/.smex-items")
-                   (global-set-key (kbd "M-x") 'smex)
-                   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+        (:name smex                          ; a better (ido like) M-x
+               :after (lambda ()
+                        (setq smex-save-file "~/.emacs.d/.smex-items")
+                        (global-set-key (kbd "M-x") 'smex)
+                        (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
 
-   (:name dot-mode
-          :type git
-          :url "https://github.com/emacsmirror/dot-mode.git"
-          :features dot-mode
-          )
-   ;; (:name rainbow-delimiters  ;; borked
-   ;;        :type http
-   ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
-   ;;        :features rainbow-delimiters)
+        (:name dot-mode
+               :type git
+               :url "https://github.com/emacsmirror/dot-mode.git"
+               :features dot-mode
+               )
+        ;; (:name rainbow-delimiters  ;; borked
+        ;;        :type http
+        ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
+        ;;        :features rainbow-delimiters)
 
-   (:name pretty-mode
-          :type git
-          :url "https://github.com/mattharrison/pretty-mode.git"
-          :features pretty-mode)
-   (:name point-stack
-          :type git
-          :url "https://github.com/mattharrison/point-stack.git"
-          :features point-stack
-          :after (lambda ()
-                   (global-set-key [f6] 'point-stack-push)
-                   (global-set-key [f7] 'point-stack-pop)
-                   (global-set-key [f8] 'point-stack-forward-stack-pop)))
+        (:name pretty-mode
+               :type git
+               :url "https://github.com/mattharrison/pretty-mode.git"
+               :features pretty-mode)
+        (:name point-stack
+               :type git
+               :url "https://github.com/mattharrison/point-stack.git"
+               :features point-stack
+               :after (lambda ()
+                        (global-set-key [f6] 'point-stack-push)
+                        (global-set-key [f7] 'point-stack-pop)
+                        (global-set-key [f8] 'point-stack-forward-stack-pop)))
 
-   (:name tango-theme
-          :type git
-          :depends color-theme
-          :url "https://github.com/mattharrison/emacs-tango-theme.git"
-          :after (lambda () (if (eq window-system 'x)
-                                (color-theme-tango)
+        (:name tango-theme
+               :type git
+               :depends color-theme
+               :url "https://github.com/mattharrison/emacs-tango-theme.git"
+               :after (lambda () (if (eq window-system 'x)
+                                     (color-theme-tango)
 
-                        (if (not (window-system))
-                            (color-theme-tty-dark))))
-          :features tango-theme
-          )
-   ;; color-theme-solarized
-   ;; (:name python
-   ;;        :after (lambda ()
-   ;;              (message "PYTHON@!")
-   ;;              (add-hook 'python-mode-hook
-   ;;                           (lambda ()
+                                   (if (not (window-system))
+                                       (color-theme-tty-dark))))
+               :features tango-theme
+               )
+        ;; color-theme-solarized
+        ;; (:name python
+        ;;        :after (lambda ()
+        ;;              (message "PYTHON@!")
+        ;;              (add-hook 'python-mode-hook
+        ;;                           (lambda ()
 
-   ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
+        ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
 
-   ;; (:name python
-   ;;     :type git
-   ;;     :url "https://github.com/fgallina/python.el.git"
-   ;;     :require 'python)
+        ;; (:name python
+        ;;     :type git
+        ;;     :url "https://github.com/fgallina/python.el.git"
+        ;;     :require 'python)
 
-   ;; (:name python-mode
-   ;;        :require 'doctest-mode)
-   (:name doctest-mode
-          :type http
-          :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
-          :features doctest-mode)
-   (:name flymake-python
-          :type git
-          :url "https://github.com/mattharrison/flymake-python.git"
-          :after (lambda ()
-                   (add-hook 'find-file-hook 'flymake-find-file-hook)
-                   (when (load "flymake" t)
-                     (defun flymake-pylint-init ()
-                       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                                          'flymake-create-temp-inplace))
-                              (local-file (file-relative-name
-                                           temp-file
-                                           (file-name-directory buffer-file-name))))
-                         (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-                     ;;     check path
-                     (add-to-list 'flymake-allowed-file-name-masks
-                                  '("\\.py\\'" flymake-pylint-init))))
-          )
+        ;; (:name python-mode
+        ;;        :require 'doctest-mode)
+        (:name doctest-mode
+               :type http
+               :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
+               :features doctest-mode)
+        (:name flymake-python
+               :type git
+               :url "https://github.com/mattharrison/flymake-python.git"
+               :after (lambda ()
+                        (add-hook 'find-file-hook 'flymake-find-file-hook)
+                        (when (load "flymake" t)
+                          (defun flymake-pylint-init ()
+                            (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                               'flymake-create-temp-inplace))
+                                   (local-file (file-relative-name
+                                                temp-file
+                                                (file-name-directory buffer-file-name))))
+                              (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+                          ;;     check path
+                          (add-to-list 'flymake-allowed-file-name-masks
+                                       '("\\.py\\'" flymake-pylint-init))))
+               )
 
-   ;; trying out emacs-for-python virtualenv
-   ;;mmm-mode
-   (:name nxhtml
-          :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
-          )
-   (:name pony-mode
-          :type git
-          :url "https://github.com/davidmiller/pony-mode.git"
-          :features pony-mode
-          :after (lambda()
-                   (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
-   ;; this is for django nav
-   ;; (:name django-mode2
-   ;;        :type git
-   ;;        :url "https://github.com/myfreeweb/django-mode.git"
-   ;;     :depends yasnippet
-   ;;        :after (lambda()
-   ;;                 (require 'django-html-mode)
-   ;;                 ;; (require 'django-mode)
-   ;;                 (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
-   ;;                 (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
+        ;; trying out emacs-for-python virtualenv
+        ;;mmm-mode
+        (:name nxhtml
+               :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
+               )
+        (:name pony-mode
+               :type git
+               :url "https://github.com/davidmiller/pony-mode.git"
+               :features pony-mode
+               :after (lambda()
+                        (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
+        ;; this is for django nav
+        ;; (:name django-mode2
+        ;;        :type git
+        ;;        :url "https://github.com/myfreeweb/django-mode.git"
+        ;;     :depends yasnippet
+        ;;        :after (lambda()
+        ;;                 (require 'django-html-mode)
+        ;;                 ;; (require 'django-mode)
+        ;;                 (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
+        ;;                 (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
 
-   (:name nose
-          :type git
-          :url "https://github.com/mattharrison/nose.git"
-          :after (lambda() ))
+        (:name nose
+               :type git
+               :url "https://github.com/mattharrison/nose.git"
+               :after (lambda() ))
 
-   (:name perspective
-          :type git
-          :url "https://github.com/nex3/perspective-el.git"
-          )
-   (:name sr-speedbar
-          :type emacswiki)
-   (:name idle-highlight-mode
-          :type git
-          :url "https://github.com/emacsmirror/idle-highlight-mode.git"
-          )
-   (:name protbuf
-          :type emacswiki
-          :features protbuf)
+        (:name perspective
+               :type git
+               :url "https://github.com/nex3/perspective-el.git"
+               )
+        (:name sr-speedbar
+               :type emacswiki)
+        (:name idle-highlight-mode
+               :type git
+               :url "https://github.com/emacsmirror/idle-highlight-mode.git"
+               )
+        (:name protbuf
+               :type emacswiki
+               :features protbuf)
+        (:name typopunct
+               :type emacswiki
+               :features typopunct
+               :after (lambda()
+                        (typopunct-change-language 'english t)
+                        (defconst typopunct-ellipsis (decode-char 'ucs #x2026))
+                        (defconst typopunct-middot   (decode-char 'ucs #xB7)) ; or 2219
+                        (defun typopunct-insert-ellipsis-or-middot (arg)
+                          "Change three consecutive dots to a typographical ellipsis mark."
+                          (interactive "p")
+                          (cond
+                           ((and (= 1 arg)
+                                 (eq (char-before) ?^))
+                            (delete-char -1)
+                            (insert typopunct-middot))
+                           ((and (= 1 arg)
+                                 (eq this-command last-command)
+                                 (looking-back "\\.\\."))
+                            (replace-match "")
+                            (insert typopunct-ellipsis))
+                           (t
+                            (self-insert-command arg))))
+                        (define-key typopunct-map "." 'typopunct-insert-ellipsis-or-middot)
+
+                        (defadvice typopunct-insert-quotation-mark (around wrap-region activate)
+                          (let* ((lang (or (get-text-property (point) 'typopunct-language)
+                                           typopunct-buffer-language))
+                                 (omark (if single
+                                            (typopunct-opening-single-quotation-mark lang)
+                                          (typopunct-opening-quotation-mark lang)))
+                                 (qmark (if single
+                                            (typopunct-closing-single-quotation-mark lang)
+                                          (typopunct-closing-quotation-mark lang))))
+                            (cond
+                             (mark-active
+                              (let ((skeleton-end-newline nil)
+                                    (singleo (typopunct-opening-single-quotation-mark lang))
+                                    (singleq (typopunct-closing-single-quotation-mark lang)))
+                                (if (> (point) (mark))
+                                    (exchange-point-and-mark))
+                                (save-excursion
+                                  (while (re-search-forward (regexp-quote (string omark)) (mark) t)
+                                    (replace-match (regexp-quote (string singleo)) nil nil)))
+                                (save-excursion
+                                  (while (re-search-forward (regexp-quote (string qmark)) (mark) t)
+                                    (replace-match (regexp-quote (string singleq)) nil nil)))
+                                (skeleton-insert (list nil omark '_ qmark) -1)))
+                             ((looking-at (regexp-opt (list (string omark) (string qmark))))
+                              (forward-char 1))
+                             (t ad-do-it))))
+                        ))
 
    ;; javascript stuff
    ;; don't use yegge's use better indent version
