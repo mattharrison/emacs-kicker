@@ -226,7 +226,8 @@
                             (insert typopunct-middot))
                            ((and (= 1 arg)
                                  (eq this-command last-command)
-                                 (looking-back "\\.\\."))
+                                 ;; made python friendly (need 4 .'s for ...)
+                                 (looking-back "\\.\\.\\."))
                             (replace-match "")
                             (insert typopunct-ellipsis))
                            (t
@@ -616,7 +617,7 @@ and choosing a simple theme."
       (widen))))
 
 ;; https://gist.github.com/1475626
-(defun nkv/stop-here (pos)
+(defun nkv/pdb-here (pos)
   (interactive "d")
   (let (
         (trace-command "import pdb; pdb.set_trace()"))
