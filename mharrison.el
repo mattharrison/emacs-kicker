@@ -6,92 +6,24 @@
 ;;(set-default-font "Ubuntu Mono-11")
 ;; (set-default-font "Inconsolata-8")
 
-;;(add-to-list 'load-path "~/work/emacs/el-get")
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
-  (url-retrieve
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-   (lambda (s)
-     (let (el-get-master-branch)
-       (end-of-buffer)
-       (eval-print-last-sexp)))))
+  (with-current-buffer 
+      (url-retrieve-synchronously 
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el") 
+    (end-of-buffer) 
+    (eval-print-last-sexp)))
+;;(el-get 'sync)
 
 ;;(add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
 
 (setq el-get-sources
       '(
-        ;; (:name emacs-for-python
-        ;;        :type git
-        ;;        :url "git://github.com/gabrielelanaro/emacs-for-python.git"
-        ;;        :load-path "."
-        ;;        :post-init (lambda ()
-        ;;                     (require 'epy-setup)
-        ;;                     (require 'epy-python)
-        ;;                     (require 'epy-completion))
-        ;;        )
-
-        (:name yasnippet
-               :website "http://code.google.com/p/yasnippet/"
-               :description "YASnippet is a template system for Emacs."
-               :type git
-               :url "https://github.com/mattharrison/yasnippet.git"
-               :features "yasnippet"
-               :prepare (lambda ()
-                          ;; Set up the default snippets directory
-                          ;;
-                          ;; Principle: don't override any user settings
-                          ;; for yas/snippet-dirs, whether those were made
-                          ;; with setq or customize.  If the user doesn't
-                          ;; want the default snippets, she shouldn't get
-                          ;; them!
-                          (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
-                            (setq yas/snippet-dirs
-                                  (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
-
-               :post-init (lambda ()
-                            ;; Trick customize into believing the standard
-                            ;; value includes the default snippets.
-                            ;; yasnippet would probably do this itself,
-                            ;; except that it doesn't include an
-                            ;; installation procedure that sets up the
-                            ;; snippets directory, and thus doesn't know
-                            ;; where those snippets will be installed.  See
-                            ;; http://code.google.com/p/yasnippet/issues/detail?id=179
-                            (put 'yas/snippet-dirs 'standard-value
-                                 ;; as cus-edit.el specifies, "a cons-cell
-                                 ;; whose car evaluates to the standard
-                                 ;; value"
-                                 (list (list 'quote
-                                             (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
-               ;; byte-compile load vc-svn and that fails
-               ;; see https://github.com/dimitri/el-get/issues/200
-               :compile nil)
-
-        ;; (:name yasnippet
-        ;;        :url "https://github.com/mattharrison/yasnippet.git")
-        ;; :after (lambda()
-        ;;      (yas/initialize)
-        ;;      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
-        ;;      (yas/reload-all)))
-
-        ;; (:name hungry-delete
-        ;;        :type git
-        ;;        :url "https://github.com/nflath/hungry-delete.git"
-        ;;        :features hungry-delete
-        ;;        ;;:require 'hungry-delete
-        ;;        ;; :after (lambda ()
-        ;;        ;;          (turn-on-hungry-delete-mode))
-        ;;  )
-        (:name pycoverage
-               :type git
-               :url "https://github.com/mattharrison/pycoverage.el.git"
-               :features pycov2)
         (:name pomodoro
                :type http
                :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
-
-        (:name smex                          ; a better (ido like) M-x
+	(:name smex                          ; a better (ido like) M-x
                :after (lambda ()
                         (setq smex-save-file "~/.emacs.d/.smex-items")
                         (global-set-key (kbd "M-x") 'smex)
@@ -102,11 +34,6 @@
                :url "https://github.com/emacsmirror/dot-mode.git"
                :features dot-mode
                )
-        ;; (:name rainbow-delimiters  ;; borked
-        ;;        :type http
-        ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
-        ;;        :features rainbow-delimiters)
-
         (:name pretty-mode
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
@@ -131,26 +58,6 @@
                                        (color-theme-tty-dark))))
                :features tango-theme
                )
-        ;; color-theme-solarized
-        ;; (:name python
-        ;;        :after (lambda ()
-        ;;              (message "PYTHON@!")
-        ;;              (add-hook 'python-mode-hook
-        ;;                           (lambda ()
-
-        ;;                             (define-key python-mode-map "\C-m" 'newline-and-indent)))))
-
-        ;; (:name python
-        ;;     :type git
-        ;;     :url "https://github.com/fgallina/python.el.git"
-        ;;     :require 'python)
-
-        ;; (:name python-mode
-        ;;        :require 'doctest-mode)
-        (:name doctest-mode
-               :type http
-               :url "https://raw.github.com/shentonfreude/dot-emacs/master/doctest-mode.el":
-               :features doctest-mode)
         (:name flymake-python
                :type git
                :url "https://github.com/mattharrison/flymake-python.git"
@@ -168,29 +75,6 @@
                           (add-to-list 'flymake-allowed-file-name-masks
                                        '("\\.py\\'" flymake-pylint-init))))
                )
-
-        ;; trying out emacs-for-python virtualenv
-        ;;mmm-mode
-        (:name nxhtml
-               :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
-               )
-        (:name pony-mode
-               :type git
-               :url "https://github.com/davidmiller/pony-mode.git"
-               :features pony-mode
-               :after (lambda()
-                        (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
-        ;; this is for django nav
-        ;; (:name django-mode2
-        ;;        :type git
-        ;;        :url "https://github.com/myfreeweb/django-mode.git"
-        ;;     :depends yasnippet
-        ;;        :after (lambda()
-        ;;                 (require 'django-html-mode)
-        ;;                 ;; (require 'django-mode)
-        ;;                 (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
-        ;;                 (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
-
         (:name nose
                :type git
                :url "https://github.com/mattharrison/nose.git"
@@ -297,7 +181,105 @@
           :type git
           :url "https://github.com/TeMPOraL/nyan-mode"
           :features nyan-mode)
-   ))
+    (:name pycoverage
+               :type git
+               :url "https://github.com/mattharrison/pycoverage.el.git"
+               :load "pycov2.el"
+               :features pycov2)
+;; (:name pycoverage
+   ;; 	  :description "Coverage.py integration with emacs"
+   ;; 	  :type github
+   ;; 	  :pkgname "mattharrison/pycoverage"
+   ;; 	  :features pycov2)
+))
+	
+        ;; (:name yasnippet
+        ;;        :website "http://code.google.com/p/yasnippet/"
+        ;;        :description "YASnippet is a template system for Emacs."
+        ;;        :type git
+        ;;        :url "https://github.com/mattharrison/yasnippet.git"
+        ;;        :features "yasnippet"
+        ;;        :prepare (lambda ()
+        ;;                   ;; Set up the default snippets directory
+        ;;                   ;;
+        ;;                   ;; Principle: don't override any user settings
+        ;;                   ;; for yas/snippet-dirs, whether those were made
+        ;;                   ;; with setq or customize.  If the user doesn't
+        ;;                   ;; want the default snippets, she shouldn't get
+        ;;                   ;; them!
+        ;;                   (unless (or (boundp 'yas/snippet-dirs) (get 'yas/snippet-dirs 'customized-value))
+        ;;                     (setq yas/snippet-dirs
+        ;;                           (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets")))))
+
+        ;;        :post-init (lambda ()
+        ;;                     ;; Trick customize into believing the standard
+        ;;                     ;; value includes the default snippets.
+        ;;                     ;; yasnippet would probably do this itself,
+        ;;                     ;; except that it doesn't include an
+        ;;                     ;; installation procedure that sets up the
+        ;;                     ;; snippets directory, and thus doesn't know
+        ;;                     ;; where those snippets will be installed.  See
+        ;;                     ;; http://code.google.com/p/yasnippet/issues/detail?id=179
+        ;;                     (put 'yas/snippet-dirs 'standard-value
+        ;;                          ;; as cus-edit.el specifies, "a cons-cell
+        ;;                          ;; whose car evaluates to the standard
+        ;;                          ;; value"
+        ;;                          (list (list 'quote
+        ;;                                      (list (concat el-get-dir (file-name-as-directory "yasnippet") "snippets"))))))
+        ;;        ;; byte-compile load vc-svn and that fails
+        ;;        ;; see https://github.com/dimitri/el-get/issues/200
+        ;;        :compile nil)
+
+        ;; (:name yasnippet
+        ;;        :url "https://github.com/mattharrison/yasnippet.git")
+        ;; :after (lambda()
+        ;;      (yas/initialize)
+        ;;      (add-to-list 'yas/snippet-dirs "~/work/emacs/emacs-kicker/snippets")
+        ;;      (yas/reload-all)))
+
+        ;; (:name hungry-delete
+        ;;        :type git
+        ;;        :url "https://github.com/nflath/hungry-delete.git"
+        ;;        :features hungry-delete
+        ;;        ;;:require 'hungry-delete
+        ;;        ;; :after (lambda ()
+        ;;        ;;          (turn-on-hungry-delete-mode))
+        ;;  )
+        ;; (:name pycoverage
+        ;;        :type git
+        ;;        :url "https://github.com/mattharrison/pycoverage.el.git"
+        ;;        :load "pycov.el"
+        ;;        :features pycov2)
+        ;; (:name rainbow-delimiters  ;; borked
+        ;;        :type http
+        ;;        :url "http://www.emacswiki.org/emacs/download/rainbow-delimiters.el"
+        ;;        :features rainbow-delimiters)
+
+        ;;mmm-mode
+        ;; (:name nxhtml
+        ;;        :after (lambda() (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mumamo-mode)))
+        ;;        )
+        ;; (:name pony-mode
+        ;;        :type git
+        ;;        :url "https://github.com/davidmiller/pony-mode.git"
+        ;;        :features pony-mode
+        ;;        :after (lambda()
+        ;;                 (add-to-list 'load-path (concat el-get-dir "pony-mode"))))
+        ;; this is for django nav
+        ;; (:name django-mode2
+        ;;        :type git
+        ;;        :url "https://github.com/myfreeweb/django-mode.git"
+        ;;     :depends yasnippet
+        ;;        :after (lambda()
+        ;;                 (require 'django-html-mode)
+        ;;                 ;; (require 'django-mode)
+        ;;                 (yas/load-directory "~/.emacs.d/el-get/django-mode2/snippets")
+        ;;                 (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))))
+
+
+   
+
+
 
 (setq my-packages
       (append
@@ -321,7 +303,7 @@
 	 minimap
 	 python-mode
 	 python-pep8
-         rainbow-mode         ; pretty css colors, etc
+         ;;rainbow-mode         ; pretty css colors, etc
 	 ;;sass-mode
          smooth-scrolling
          sudo-save
@@ -329,7 +311,7 @@
          undo-tree
          virtualenv
         )
-       (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
+       (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get 'sync my-packages)
 
@@ -931,3 +913,5 @@ and choosing a simple theme."
 
 
 (put 'ido-exit-minibuffer 'disabled nil)
+
+(put 'narrow-to-region 'disabled nil)
