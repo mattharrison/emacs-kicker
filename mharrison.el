@@ -7,7 +7,6 @@
 ;; (set-default-font "Inconsolata-8")
 
 
-
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
 (unless (require 'el-get nil t)
@@ -18,20 +17,16 @@
        (goto-char (point-max))
        (eval-print-last-sexp)))))
 
-
-
-
 (setq el-get-sources
       '(
         (:name pomodoro
                :type http
                :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
-	(:name smex                          ; a better (ido like) M-x
+        (:name smex                          ; a better (ido like) M-x
                :after (progn
                         (setq smex-save-file "~/.emacs.d/.smex-items")
                         (global-set-key (kbd "M-x") 'smex)
                         (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
-
         (:name dot-mode
                :type git
                :url "https://github.com/emacsmirror/dot-mode.git"
@@ -40,40 +35,40 @@
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
                :features pretty-mode)
-	(:name point-stack
-	       ;; in el-get!!!
-	              :after (progn
-                (global-set-key '[(f6)] 'point-stack-push)
-                (global-set-key '[(f7)] 'point-stack-pop)
-                (global-set-key '[(f8)] 'point-stack-forward-stack-pop)))
+        (:name point-stack
+               ;; in el-get!!!
+               :after (progn
+                        (global-set-key '[(f6)] 'point-stack-push)
+                        (global-set-key '[(f7)] 'point-stack-pop)
+                        (global-set-key '[(f8)] 'point-stack-forward-stack-pop)))
         (:name tango-theme
                :type git
                :depends color-theme
                :url "https://github.com/mattharrison/emacs-tango-theme.git"
                :after (progn (if (eq window-system 'x)
-                                     (color-theme-tango)
+                                 (color-theme-tango)
 
-                                   (if (not (window-system))
-                                       (color-theme-tty-dark))))
+                               (if (not (window-system))
+                                   (color-theme-tty-dark))))
                :features tango-theme
                )
-        ;; (:name flymake-python
-        ;;        :type git
-        ;;        :url "https://github.com/mattharrison/flymake-python.git"
-        ;;        :after (progn
-        ;;                 (add-hook 'find-file-hook 'flymake-find-file-hook)
-        ;;                 (when (load "flymake" t)
-        ;;                   (defun flymake-pylint-init ()
-        ;;                     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-        ;;                                        'flymake-create-temp-inplace))
-        ;;                            (local-file (file-relative-name
-        ;;                                         temp-file
-        ;;                                         (file-name-directory buffer-file-name))))
-        ;;                       (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-        ;;                   ;;     check path
-        ;;                   (add-to-list 'flymake-allowed-file-name-masks
-        ;;                                '("\\.py\\'" flymake-pylint-init)))))
-               
+        (:name flymake-python
+               :type github
+               :pkgname "mattharrison/flymake-python"
+               :post-init (progn
+                        (add-hook 'find-file-hook 'flymake-find-file-hook)
+                        (when (load "flymake" t)
+                          (defun flymake-pylint-init ()
+                            (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                               'flymake-create-temp-inplace))
+                                   (local-file (file-relative-name
+                                                temp-file
+                                                (file-name-directory buffer-file-name))))
+                              (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+                          ;;     check path
+                          (add-to-list 'flymake-allowed-file-name-masks
+                                       '("\\.py\\'" flymake-pylint-init)))))
+
         (:name nose
                :type git
                :url "https://github.com/mattharrison/nose.git"
@@ -150,37 +145,40 @@
 
                         ))
 
-   ;; javascript stuff
-   ;; don't use yegge's use better indent version
-   (:name js2-mode
-       :type git
-       :url "https://github.com/mooz/js2-mode.git"
-       :compile "js2-mode.el"
-       :post-init (progn
-                    (autoload 'js2-mode "js2-mode" nil t)))
-   (:name writegood-mode
-          :type git
-          :url "https://github.com/bnbeckwith/writegood-mode.git"
-          :features writegood-mode )
-   (:name nyan-mode
-          :website "http://nyan-mode.buildsomethingamazing.com/"
-          :description "cat indicator"
-          :type git
-          :url "https://github.com/TeMPOraL/nyan-mode"
-          :features nyan-mode)
-    (:name pycoverage
+        ;; javascript stuff
+        ;; don't use yegge's use better indent version
+        (:name js2-mode
+               :type git
+               :url "https://github.com/mooz/js2-mode.git"
+               :compile "js2-mode.el"
+               :post-init (progn
+                            (autoload 'js2-mode "js2-mode" nil t)))
+        (:name writegood-mode
+               :type git
+               :url "https://github.com/bnbeckwith/writegood-mode.git"
+               :features writegood-mode )
+        (:name nyan-mode
+               :website "http://nyan-mode.buildsomethingamazing.com/"
+               :description "cat indicator"
+               :type git
+               :url "https://github.com/TeMPOraL/nyan-mode"
+               :features nyan-mode)
+        (:name yasnippet
+               ;;:url "https://github.com/mattharrison/yasnippet.git")
+               :pkgname "mattharrison/yasnippet")
+        (:name pycoverage
                :type git
                :url "https://github.com/mattharrison/pycoverage.el.git"
                :load "pycov2.el"
                :features pycov2)
-;; (:name pycoverage
-   ;; 	  :description "Coverage.py integration with emacs"
-   ;; 	  :type github
-   ;; 	  :pkgname "mattharrison/pycoverage"
-   ;; 	  :features pycov2)
-))
+        ;; (:name pycoverage
+        ;; 	  :description "Coverage.py integration with emacs"
+        ;; 	  :type github
+        ;; 	  :pkgname "mattharrison/pycoverage"
+        ;; 	  :features pycov2)
+        ))
 
-   
+
 
 
 
@@ -206,16 +204,17 @@
 	 minimap
 	 monky
 	 perspective
-	 python-mode
+	 ;; python-mode
 	 python-pep8
-         ;;rainbow-mode         ; pretty css colors, etc
+     ;;rainbow-mode         ; pretty css colors, etc
 	 ;;sass-mode
-         smooth-scrolling
-         sudo-save
-         switch-window          ; take over C-x o
-         undo-tree
-         virtualenv
-        )
+     smartparens
+     smooth-scrolling
+     sudo-save
+     switch-window          ; take over C-x o
+     ;;undo-tree
+     virtualenv
+     )
        (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get 'sync my-packages)
