@@ -253,6 +253,9 @@
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 
+;; don't load flymake at start (causes problems if directories aren't writeable)
+(setq flymake-start-syntax-check-on-find-file nil)
+
 ;; disable C-z on X11 sessions
 (when window-system
   (global-unset-key "\C-z"))
