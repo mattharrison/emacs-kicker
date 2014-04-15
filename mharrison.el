@@ -6,6 +6,8 @@
 ;;(set-default-font "Ubuntu Mono-11")
 ;; (set-default-font "Inconsolata-8")
 
+;; border setting
+;; (set-frame-parameter nil 'internal-border-width 0)
 
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
@@ -52,22 +54,22 @@
                                    (color-theme-tty-dark))))
                :features tango-theme
                )
-        (:name flymake-python
-               :type github
-               :pkgname "mattharrison/flymake-python"
-               :post-init (progn
-                        (add-hook 'find-file-hook 'flymake-find-file-hook)
-                        (when (load "flymake" t)
-                          (defun flymake-pylint-init ()
-                            (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                                               'flymake-create-temp-inplace))
-                                   (local-file (file-relative-name
-                                                temp-file
-                                                (file-name-directory buffer-file-name))))
-                              (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-                          ;;     check path
-                          (add-to-list 'flymake-allowed-file-name-masks
-                                       '("\\.py\\'" flymake-pylint-init)))))
+        ;; (:name flymake-python
+        ;;        :type github
+        ;;        :pkgname "mattharrison/flymake-python"
+        ;;        :post-init (progn
+        ;;                 (add-hook 'find-file-hook 'flymake-find-file-hook)
+        ;;                 (when (load "flymake" t)
+        ;;                   (defun flymake-pylint-init ()
+        ;;                     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+        ;;                                        'flymake-create-temp-inplace))
+        ;;                            (local-file (file-relative-name
+        ;;                                         temp-file
+        ;;                                         (file-name-directory buffer-file-name))))
+        ;;                       (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+        ;;                   ;;     check path
+        ;;                   (add-to-list 'flymake-allowed-file-name-masks
+        ;;                                '("\\.py\\'" flymake-pylint-init)))))
 
         (:name nose
                :type git
@@ -192,10 +194,12 @@
 	 ;;predictive
 	 ;;python
 	 ;;yasnippet
+         ace-jump
 	 auto-complete
 	 color-theme  ;; borked
 	 csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
+     flycheck
 	 full-ack
 	 highlight-indentation
 	 highlight-parentheses
@@ -213,7 +217,7 @@
      sudo-save
      switch-window          ; take over C-x o
      ;;undo-tree
-     virtualenv
+     ;; virtualenv
      )
        (mapcar 'el-get-source-name el-get-sources)))
 
@@ -250,11 +254,19 @@
 ;; week (or day) action.
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
+
+(global-set-key (kbd "C-x o") 'switch-window)
+
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 
-;; don't load flymake at start (causes problems if directories aren't writeable)
-(setq flymake-start-syntax-check-on-find-file nil)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(eval-after-load "ace-jump-mode"
+  '(ace-jump-mode-enable-mark-sync))
+(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+;; ;; don't load flymake at start (causes problems if directories aren't writeable)
+;; (setq flymake-start-syntax-check-on-find-file nil)
 
 ;; disable C-z on X11 sessions
 (when window-system
@@ -296,13 +308,13 @@
 (global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
 
 
-;; show flymake problems in minibuffer
-;; https://gist.github.com/415429
-(defun my-flymake-show-help ()
-   (when (get-char-property (point) 'flymake-overlay)
-     (let ((help (get-char-property (point) 'help-echo)))
-       (if help (message "%s" help)))))
-(add-hook 'post-command-hook 'my-flymake-show-help)
+;; ;; show flymake problems in minibuffer
+;; ;; https://gist.github.com/415429
+;; (defun my-flymake-show-help ()
+;;    (when (get-char-property (point) 'flymake-overlay)
+;;      (let ((help (get-char-property (point) 'help-echo)))
+;;        (if help (message "%s" help)))))
+;; (add-hook 'post-command-hook 'my-flymake-show-help)
 
 ;; Notes
 ;; C-x +  (balanced windows after split)
@@ -384,25 +396,25 @@ by using nxml's indentation rules."
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 109 97 114 tab 45 119 tab 104 tab return 134217848 105 110 100 101 tab 45 120 109 tab return] 0 "%d")) arg)))
 (global-set-key '[(f9)]  'indent-xml)
 
-;; bind M-n to next flymake error
-;; inspired by http://www.emacswiki.org/emacs/FlyMake comments
-(defun matt-next-flymake-err ()
-  (interactive)
-  (flymake-goto-next-error)
-  (let ((err (get-char-property (point) 'help-echo)))
-    (when err
-      (message err)))
-  )
-(defun matt-prev-flymake-err ()
-  (interactive)
-  (flymake-goto-prev-error)
-  (let ((err (get-char-property (point) 'help-echo)))
-    (when err
-      (message err)))
-  )
+;; ;; bind M-n to next flymake error
+;; ;; inspired by http://www.emacswiki.org/emacs/FlyMake comments
+;; (defun matt-next-flymake-err ()
+;;   (interactive)
+;;   (flymake-goto-next-error)
+;;   (let ((err (get-char-property (point) 'help-echo)))
+;;     (when err
+;;       (message err)))
+;;   )
+;; (defun matt-prev-flymake-err ()
+;;   (interactive)
+;;   (flymake-goto-prev-error)
+;;   (let ((err (get-char-property (point) 'help-echo)))
+;;     (when err
+;;       (message err)))
+;;   )
 
-(global-set-key "\M-n" 'matt-next-flymake-err)
-(global-set-key "\M-p" 'matt-prev-flymake-err)
+;; (global-set-key "\M-n" 'matt-next-flymake-err)
+;; (global-set-key "\M-p" 'matt-prev-flymake-err)
 
 ;; if compilation-shell-minor-mode is on, then these regexes
 ;; will make errors linkable
@@ -529,6 +541,9 @@ and choosing a simple theme."
     (forward-line -1)
     (indent-for-tab-command)))
 
+(defun pdb-here ()
+  (interactive)
+  (insert "import pdb; pdb.set_trace()"))
 
 ;; from https://github.com/nflath/emacs-repos/blob/master/internal/python.el
 (defun python-insert-end-dunder ()
