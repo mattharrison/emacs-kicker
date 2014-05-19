@@ -194,10 +194,10 @@
 	 ;;predictive
 	 ;;python
 	 ;;yasnippet
-         ace-jump
+         ace-jump-mode
 	 auto-complete
 	 color-theme  ;; borked
-	 csv-mode
+	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
      flycheck
 	 full-ack
@@ -205,8 +205,8 @@
 	 highlight-parentheses
 	 lua-mode
 	 magit
-	 minimap
-	 monky
+	 ;; minimap
+	 ;; monky
 	 perspective
 	 ;; python-mode
 	 python-pep8
