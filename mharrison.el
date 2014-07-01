@@ -10,7 +10,6 @@
 ;; (set-frame-parameter nil 'internal-border-width 0)
 
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
 (unless (require 'el-get nil t)
   (url-retrieve
    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
@@ -196,7 +195,7 @@
 	 ;;yasnippet
          ace-jump-mode
 	 auto-complete
-	 color-theme  ;; borked
+	 ;; color-theme  ;; borked
 	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
      flycheck
@@ -261,13 +260,55 @@
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
 
+;; C-u C-c SPC to go to non/any char
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+(define-key global-map (kbd "<C-return>") 'ace-jump-mode)
+(define-key global-map (kbd "<C-s-return>") 'ace-jump-mode)
+
+
+;; cider conf
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(setq cider-auto-select-error-buffer t)
+(setq cider-repl-print-length 100) ; the default is nil, no limit
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
+(add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
+(add-to-list 'load-path "~/.emacs.d/el-get/cider")
+
+(defun beautify-json ()
+  (interactive)
+  (let ((b (if mark-active (min (point) (mark)) (point-min)))
+        (e (if mark-active (max (point) (mark)) (point-max))))
+    (shell-command-on-region b e
+      "python -mjson.tool" (current-buffer) t)))
+
+;; pretty print xml region
+(defun pretty-print-xml-region (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+    (nxml-mode)
+    (goto-char begin)
+    ;; split <foo><foo> or </foo><foo>, but not <foo></foo>
+    (while (search-forward-regexp ">[ \t]*<[^/]" end t)
+      (backward-char 2) (insert "\n") (incf end))
+    ;; split <foo/></foo> and </foo></foo>
+    (goto-char begin)
+    (while (search-forward-regexp "<.*?/.*?>[ \t]*<" end t)
+      (backward-char) (insert "\n") (incf end))
+    (indent-region begin end nil)
+    (normal-mode))
+  (message "All indented!"))
+
+
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
-;; ;; don't load flymake at start (causes problems if directories aren't writeable)
-;; (setq flymake-start-syntax-check-on-find-file nil)
 
 ;; disable C-z on X11 sessions
 (when window-system
@@ -308,6 +349,18 @@
 (global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
 (global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
 
+
+
+;; avoid errors loading with flymake
+(setq flymake-start-syntax-check-on-find-file nil)
+
+;; show flymake problems in minibuffer
+;; https://gist.github.com/415429
+(defun my-flymake-show-help ()
+   (when (get-char-property (point) 'flymake-overlay)
+     (let ((help (get-char-property (point) 'help-echo)))
+       (if help (message "%s" help)))))
+(add-hook 'post-command-hook 'my-flymake-show-help)
 
 ;; ;; show flymake problems in minibuffer
 ;; ;; https://gist.github.com/415429
