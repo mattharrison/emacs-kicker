@@ -167,6 +167,12 @@
         (:name yasnippet
                ;;:url "https://github.com/mattharrison/yasnippet.git")
                :pkgname "mattharrison/yasnippet")
+        (:name clojure-snippets
+               :type git
+               :url "https://github.com/mpenet/clojure-snippets"
+               ;:pkgname "mpenet/clojure-snippets"
+               )
+
         (:name pycoverage
                :type git
                :url "https://github.com/mattharrison/pycoverage.el.git"
@@ -310,6 +316,10 @@ by using nxml's indentation rules."
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
+
+(when (require 'yasnippet nil 'noerror)
+  (progn
+    (yas/load-directory "~/.emacs.d/el-get/clojure-snippets/snippets")))
 
 ;; disable C-z on X11 sessions
 (when window-system
@@ -771,10 +781,10 @@ and choosing a simple theme."
 (add-hook 'coffee-mode-hook 'markers-hl)
 (add-hook 'nxml-mode-hook 'markers-hl)
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 
