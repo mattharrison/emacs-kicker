@@ -210,12 +210,13 @@
 	 perspective
 	 ;; python-mode
 	 python-pep8
-     ;;rainbow-mode         ; pretty css colors, etc
+     rainbow-mode         ; pretty css colors, etc
 	 ;;sass-mode
      smartparens
      smooth-scrolling
      sudo-save
      switch-window          ; take over C-x o
+     wgrep
      ;;undo-tree
      ;; virtualenv
      )
