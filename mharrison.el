@@ -8,15 +8,17 @@
 
 ;; border setting
 ;; (set-frame-parameter nil 'internal-border-width 0)
-
+;;(add-to-list 'load-path "~/work/emacs/emacs-ipython-notebook")
+;;(require 'ein)
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(unless (require 'el-get nil t)
-  (url-retrieve
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-   (lambda (s)
-     (let (el-get-master-branch)
-       (goto-char (point-max))
-       (eval-print-last-sexp)))))
+(require 'el-get)
+;; (unless (require 'el-get nil t)
+;;   (url-retrieve
+;;    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+;;    (lambda (s)
+;;      (let (el-get-master-branch)
+;;        (goto-char (point-max))
+;;        (eval-print-last-sexp)))))
 
 (setq el-get-sources
       '(
@@ -32,6 +34,13 @@
                :type git
                :url "https://github.com/emacsmirror/dot-mode.git"
                :features dot-mode)
+        (:name ein
+               :type github
+               :url "https://github.com/millejoh/emacs-ipython-notebook.git"
+               :depends (websocket request auto-complete)
+               :load-path ("lisp")
+               :submodule nil
+               :features ein2)
         (:name pretty-mode
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
@@ -201,11 +210,12 @@
 	 ;;yasnippet
          ace-jump-mode
 	 auto-complete
-	 ;; color-theme  ;; borked
+	 color-theme  ;; borked
 	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
      flycheck
-	 full-ack
+     full-ack
+     guide-key
      helm
 	 highlight-indentation
 	 highlight-parentheses
@@ -216,15 +226,16 @@
 	 perspective
 	 ;; python-mode
 	 python-pep8
-     ;;rainbow-mode         ; pretty css colors, etc
+     pyvenv
+     rainbow-mode         ; pretty css colors, etc
      realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
      smartparens
      smooth-scrolling
      sudo-save
      switch-window          ; take over C-x o
+     wgrep
      ;;undo-tree
-     ;; virtualenv
      )
        (mapcar 'el-get-source-name el-get-sources)))
 
@@ -360,9 +371,11 @@ by using nxml's indentation rules."
 (global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
 (global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
 
+(require 'guide-key)
+(setq guide-key/guide-key-sequence t)
 
 
-;; avoid errors loading with flymake
+;; Avoid errors loading with flymake
 (setq flymake-start-syntax-check-on-find-file nil)
 
 ;; show flymake problems in minibuffer
@@ -647,7 +660,7 @@ and choosing a simple theme."
             (setq indent-tabs-mode nil
                   tab-width 2)
             (idle-highlight-mode t)
-            (define-key         python-mode-map (kdb "C-c C-b") 'nkv/stop-here)
+            (define-key         python-mode-map (kbd "C-c C-b") 'nkv/stop-here)
             (define-key         python-mode-map (kbd ".")       'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "SPC")     'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "(")       'python-insert-end-dunder)
