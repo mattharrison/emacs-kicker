@@ -217,6 +217,7 @@
 	 ;; python-mode
 	 python-pep8
      ;;rainbow-mode         ; pretty css colors, etc
+     realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
      smartparens
      smooth-scrolling
