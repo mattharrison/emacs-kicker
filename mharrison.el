@@ -8,7 +8,8 @@
 
 ;; border setting
 ;; (set-frame-parameter nil 'internal-border-width 0)
-
+;;(add-to-list 'load-path "~/work/emacs/emacs-ipython-notebook")
+;;(require 'ein)
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (unless (require 'el-get nil t)
   (url-retrieve
@@ -32,6 +33,13 @@
                :type git
                :url "https://github.com/emacsmirror/dot-mode.git"
                :features dot-mode)
+        (:name ein
+               :type github
+               :url "https://github.com/millejoh/emacs-ipython-notebook.git"
+               :depends (websocket request auto-complete)
+               :load-path ("lisp")
+               :submodule nil
+               :features ein)
         (:name pretty-mode
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
@@ -216,13 +224,14 @@
 	 perspective
 	 ;; python-mode
 	 python-pep8
-     ;;rainbow-mode         ; pretty css colors, etc
+     rainbow-mode         ; pretty css colors, etc
      realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
      smartparens
      smooth-scrolling
      sudo-save
      switch-window          ; take over C-x o
+     wgrep
      ;;undo-tree
      ;; virtualenv
      )
