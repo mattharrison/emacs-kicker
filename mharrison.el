@@ -11,13 +11,14 @@
 ;;(add-to-list 'load-path "~/work/emacs/emacs-ipython-notebook")
 ;;(require 'ein)
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(unless (require 'el-get nil t)
-  (url-retrieve
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-   (lambda (s)
-     (let (el-get-master-branch)
-       (goto-char (point-max))
-       (eval-print-last-sexp)))))
+(require 'el-get)
+;; (unless (require 'el-get nil t)
+;;   (url-retrieve
+;;    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+;;    (lambda (s)
+;;      (let (el-get-master-branch)
+;;        (goto-char (point-max))
+;;        (eval-print-last-sexp)))))
 
 (setq el-get-sources
       '(
@@ -39,7 +40,7 @@
                :depends (websocket request auto-complete)
                :load-path ("lisp")
                :submodule nil
-               :features ein)
+               :features ein2)
         (:name pretty-mode
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
@@ -230,6 +231,7 @@
 	 perspective
 	 ;; python-mode
 	 python-pep8
+     pyvenv
      rainbow-mode         ; pretty css colors, etc
      realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
@@ -239,7 +241,6 @@
      switch-window          ; take over C-x o
      wgrep
      ;;undo-tree
-     ;; virtualenv
      )
        (mapcar 'el-get-source-name el-get-sources)))
 
@@ -393,9 +394,11 @@ by using nxml's indentation rules."
 (global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
 (global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
 
+(require 'guide-key)
+(setq guide-key/guide-key-sequence t)
 
 
-;; avoid errors loading with flymake
+;; Avoid errors loading with flymake
 (setq flymake-start-syntax-check-on-find-file nil)
 
 ;; show flymake problems in minibuffer
