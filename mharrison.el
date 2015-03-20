@@ -225,7 +225,7 @@
 	 ;; python-mode
 	 python-pep8
      rainbow-mode         ; pretty css colors, etc
-     realgud ;; pydbgr-track-mode from shell running pdb to track
+     ;;realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
      smartparens
      smooth-scrolling
@@ -656,7 +656,7 @@ and choosing a simple theme."
             (setq indent-tabs-mode nil
                   tab-width 2)
             (idle-highlight-mode t)
-            (define-key         python-mode-map (kdb "C-c C-b") 'nkv/stop-here)
+            (define-key         python-mode-map (kbd "C-c C-b") 'nkv/stop-here)
             (define-key         python-mode-map (kbd ".")       'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "SPC")     'python-insert-end-dunder)
             (define-key         python-mode-map (kbd "(")       'python-insert-end-dunder)
