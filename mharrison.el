@@ -210,10 +210,13 @@
          ace-jump-mode
 	 auto-complete
 	 ;; color-theme  ;; borked
+     cider
+     clojure-mode
 	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
      flycheck
 	 full-ack
+     guide-key
      helm
 	 highlight-indentation
 	 highlight-parentheses
