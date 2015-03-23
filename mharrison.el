@@ -11,13 +11,14 @@
 ;;(add-to-list 'load-path "~/work/emacs/emacs-ipython-notebook")
 ;;(require 'ein)
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(unless (require 'el-get nil t)
-  (url-retrieve
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
-   (lambda (s)
-     (let (el-get-master-branch)
-       (goto-char (point-max))
-       (eval-print-last-sexp)))))
+(require 'el-get)
+;; (unless (require 'el-get nil t)
+;;   (url-retrieve
+;;    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+;;    (lambda (s)
+;;      (let (el-get-master-branch)
+;;        (goto-char (point-max))
+;;        (eval-print-last-sexp)))))
 
 (setq el-get-sources
       '(
@@ -39,7 +40,7 @@
                :depends (websocket request auto-complete)
                :load-path ("lisp")
                :submodule nil
-               :features ein)
+               :features ein2)
         (:name pretty-mode
                :type git
                :url "https://github.com/mattharrison/pretty-mode.git"
@@ -212,14 +213,20 @@
 	 ;; color-theme  ;; borked
      cider
      clojure-mode
+	 color-theme  ;; borked
 	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
      flycheck
 	 full-ack
      guide-key
+     popwin
      helm
 	 highlight-indentation
 	 highlight-parentheses
+     langtool
+     lispy
+     iedit
+     highlight
 	 lua-mode
 	 magit
 	 ;; minimap
@@ -227,6 +234,7 @@
 	 perspective
 	 ;; python-mode
 	 python-pep8
+     pyvenv
      rainbow-mode         ; pretty css colors, etc
      ;;realgud ;; pydbgr-track-mode from shell running pdb to track
 	 ;;sass-mode
@@ -236,7 +244,6 @@
      switch-window          ; take over C-x o
      wgrep
      ;;undo-tree
-     ;; virtualenv
      )
        (mapcar 'el-get-source-name el-get-sources)))
 
@@ -276,13 +283,16 @@
 
 (global-set-key (kbd "C-x o") 'switch-window)
 
-(global-set-key (kbd "M-n") 'next-error)
-(global-set-key (kbd "M-p") 'previous-error)
+;; (global-set-key (kbd "M-n") 'next-error)
+;; (global-set-key (kbd "M-p") 'previous-error)
 
 ;; C-u C-c SPC to go to non/any char
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 (define-key global-map (kbd "<C-return>") 'ace-jump-mode)
 (define-key global-map (kbd "<C-s-return>") 'ace-jump-mode)
+
+;; guide-key
+  (setq guide-key/guide-key-sequence t)
 
 
 ;; cider conf
@@ -292,6 +302,19 @@
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
 (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
 (add-to-list 'load-path "~/.emacs.d/el-get/cider")
+
+;; grammar/spelling https://joelkuiper.eu/spellcheck_emacs
+(when (executable-find "hunspell")
+  (setq-default ispell-program-name "hunspell")
+  (setq ispell-really-hunspell t))
+(require 'langtool)
+(setq langtool-language-tool-jar "/media/matt/29453c6c-2877-4c60-ba77-46b83d73d50b/home/matt/work/emacs/LanguageTool-2.7/languagetool-commandline.jar"
+      ;; langtool-mother-tongue "nl"
+      ;; langtool-disabled-rules '("WHITESPACE_RULE"
+      ;;                           "EN_UNPAIRED_BRACKETS"
+      ;;                           "COMMA_PARENTHESIS_WHITESPACE"
+      ;;                           "EN_QUOTES")
+)
 
 (defun beautify-json ()
   (interactive)
@@ -350,6 +373,8 @@ by using nxml's indentation rules."
       (redraw-display))
 (global-set-key '[(f11)]  'toggle-font-size)
 
+;; make maximise fill screen
+(setq frame-resize-pixelwise t)
 
 ;; function keys
 (global-set-key [f5] (lambda nil (interactive) (revert-buffer nil t t) (message (concat "Reverted buffer " (buffer-name)))))
@@ -372,9 +397,11 @@ by using nxml's indentation rules."
 (global-set-key (kbd "<mouse-3>") 'mouse-major-mode-menu)
 (global-set-key (kbd "<C-mouse-3>") 'mouse-popup-menubar)
 
+(require 'guide-key)
+(setq guide-key/guide-key-sequence t)
 
 
-;; avoid errors loading with flymake
+;; Avoid errors loading with flymake
 (setq flymake-start-syntax-check-on-find-file nil)
 
 ;; show flymake problems in minibuffer
@@ -989,3 +1016,9 @@ and choosing a simple theme."
 (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
 ;; (helm-mode)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("1bb9af3baf150cc362bdd1267abc199a6c3975357cfcf57550cbc63df1823265" default))))
