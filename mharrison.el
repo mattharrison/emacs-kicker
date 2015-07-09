@@ -10,8 +10,8 @@
 ;; (set-frame-parameter nil 'internal-border-width 0)
 ;;(add-to-list 'load-path "~/work/emacs/emacs-ipython-notebook")
 ;;(require 'ein)
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(require 'el-get)
+;;(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+;;;;(require 'el-get)
 ;; (unless (require 'el-get nil t)
 ;;   (url-retrieve
 ;;    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
@@ -19,182 +19,202 @@
 ;;      (let (el-get-master-branch)
 ;;        (goto-char (point-max))
 ;;        (eval-print-last-sexp)))))
+;;
 
-(setq el-get-sources
-      '(
-        (:name pomodoro
-               :type http
-               :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
-        (:name smex                          ; a better (ido like) M-x
-               :after (progn
-                        (setq smex-save-file "~/.emacs.d/.smex-items")
-                        (global-set-key (kbd "M-x") 'smex)
-                        (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
-        (:name dot-mode
-               :type git
-               :url "https://github.com/emacsmirror/dot-mode.git"
-               :features dot-mode)
-        (:name ein
-               :type github
-               :url "https://github.com/millejoh/emacs-ipython-notebook.git"
-               :depends (websocket request auto-complete)
-               :load-path ("lisp")
-               :submodule nil
-               :features ein2)
-        (:name pretty-mode
-               :type git
-               :url "https://github.com/mattharrison/pretty-mode.git"
-               :features pretty-mode)
-        (:name point-stack
-               ;; in el-get!!!
-               :after (progn
-                        (global-set-key '[(f6)] 'point-stack-push)
-                        (global-set-key '[(f7)] 'point-stack-pop)
-                        (global-set-key '[(f8)] 'point-stack-forward-stack-pop)))
-        (:name tango-theme
-               :type git
-               :depends color-theme
-               :url "https://github.com/mattharrison/emacs-tango-theme.git"
-               :after (progn (if (eq window-system 'x)
-                                 (color-theme-tango)
+(unless (boundp 'user-emacs-directory)
+  (defvar user-emacs-directory "~/.emacs.d/"
+    "Directory beneath which additional per-user Emacs-specific
+files are placed.
+  Various programs in Emacs store information in this directory.
+  Note that this should end with a directory separator.
+  See also `locate-user-emacs-file'."))
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
-                               (if (not (window-system))
-                                   (color-theme-tty-dark))))
-               :features tango-theme
-               )
-        ;; (:name flymake-python
-        ;;        :type github
-        ;;        :pkgname "mattharrison/flymake-python"
-        ;;        :post-init (progn
-        ;;                 (add-hook 'find-file-hook 'flymake-find-file-hook)
-        ;;                 (when (load "flymake" t)
-        ;;                   (defun flymake-pylint-init ()
-        ;;                     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-        ;;                                        'flymake-create-temp-inplace))
-        ;;                            (local-file (file-relative-name
-        ;;                                         temp-file
-        ;;                                         (file-name-directory buffer-file-name))))
-        ;;                       (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
-        ;;                   ;;     check path
-        ;;                   (add-to-list 'flymake-allowed-file-name-masks
-        ;;                                '("\\.py\\'" flymake-pylint-init)))))
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
 
-        (:name nose
-               :type git
-               :url "https://github.com/mattharrison/nose.git"
-               :after (progn ))
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+(el-get 'sync)
 
-        (:name sr-speedbar
-               :type emacswiki)
-        (:name idle-highlight-mode
-               :type git
-               :url "https://github.com/emacsmirror/idle-highlight-mode.git"
-               )
-        (:name protbuf
-               :type emacswiki
-               :features protbuf)
-        (:name typopunct
-               :type emacswiki
-               :features typopunct
-               :after (progn
-                        (typopunct-change-language 'english t)
-                        (defconst typopunct-ellipsis (decode-char 'ucs #x2026))
-                        (defconst typopunct-middot   (decode-char 'ucs #xB7)) ; or 2219
-                        (defun typopunct-insert-ellipsis-or-middot (arg)
-                          "Change three consecutive dots to a typographical ellipsis mark."
-                          (interactive "p")
-                          (cond
-                           ((and (= 1 arg)
-                                 (eq (char-before) ?^))
-                            (delete-char -1)
-                            (insert typopunct-middot))
-                           ((and (= 1 arg)
-                                 (eq this-command last-command)
-                                 ;; made python friendly (need 4 .'s for ...)
-                                 (looking-back "\\.\\.\\."))
-                            (replace-match "")
-                            (insert typopunct-ellipsis))
-                           (t
-                            (self-insert-command arg))))
-                        (define-key typopunct-map "." 'typopunct-insert-ellipsis-or-middot)
-
-                        (defadvice typopunct-insert-quotation-mark (around wrap-region activate)
-                          (let* ((lang (or (get-text-property (point) 'typopunct-language)
-                                           typopunct-buffer-language))
-                                 (omark (if single
-                                            (typopunct-opening-single-quotation-mark lang)
-                                          (typopunct-opening-quotation-mark lang)))
-                                 (qmark (if single
-                                            (typopunct-closing-single-quotation-mark lang)
-                                          (typopunct-closing-quotation-mark lang))))
-                            (cond
-                             (mark-active
-                              (let ((skeleton-end-newline nil)
-                                    (singleo (typopunct-opening-single-quotation-mark lang))
-                                    (singleq (typopunct-closing-single-quotation-mark lang)))
-                                (if (> (point) (mark))
-                                    (exchange-point-and-mark))
-                                (save-excursion
-                                  (while (re-search-forward (regexp-quote (string omark)) (mark) t)
-                                    (replace-match (regexp-quote (string singleo)) nil nil)))
-                                (save-excursion
-                                  (while (re-search-forward (regexp-quote (string qmark)) (mark) t)
-                                    (replace-match (regexp-quote (string singleq)) nil nil)))
-                                (skeleton-insert (list nil omark '_ qmark) -1)))
-                             ((looking-at (regexp-opt (list (string omark) (string qmark))))
-                              (forward-char 1))
-                             (t ad-do-it))))
-                        ;; C-q " gives a normal " (when in typopunct mode)
-                        ;; from iso-trans.el
-                        ;; ‘C-x 8 SPC gives a hard space.
-                        ;; ‘C-x 8 o gives ° (degree symbol).
-                        ;; ‘C-x 8 ~ ~ gives ¬.
-                        ;; ‘C-x 8 1 / 2 gives ½.
-                        ;; ‘C-x 8 * C gives ©.
-                        ;; ‘C-x 8 ^ 1 gives superscript ¹, ‘C-x 8 ^ 2’ gives superscript ², and ‘C-x 8 ^ 3’ gives superscript ³.
-
-                        ))
-
-        ;; javascript stuff
-        ;; don't use yegge's use better indent version
-        (:name js2-mode
-               :type git
-               :url "https://github.com/mooz/js2-mode.git"
-               :compile "js2-mode.el"
-               :post-init (progn
-                            (autoload 'js2-mode "js2-mode" nil t)))
-        (:name writegood-mode
-               :type git
-               :url "https://github.com/bnbeckwith/writegood-mode.git"
-               :features writegood-mode )
-        (:name nyan-mode
-               :website "http://nyan-mode.buildsomethingamazing.com/"
-               :description "cat indicator"
-               :type git
-               :url "https://github.com/TeMPOraL/nyan-mode"
-               :features nyan-mode)
-        (:name yasnippet
-               ;;:url "https://github.com/mattharrison/yasnippet.git")
-               :pkgname "mattharrison/yasnippet")
-        (:name clojure-snippets
-               :type git
-               :url "https://github.com/mpenet/clojure-snippets"
-               ;:pkgname "mpenet/clojure-snippets"
-               )
-
-        (:name pycoverage
-               :type git
-               :url "https://github.com/mattharrison/pycoverage.el.git"
-               :load "pycov2.el"
-               :features pycov2)
-        ;; (:name pycoverage
-        ;; 	  :description "Coverage.py integration with emacs"
-        ;; 	  :type github
-        ;; 	  :pkgname "mattharrison/pycoverage"
-        ;; 	  :features pycov2)
-        ))
-
-
+;;(setq el-get-sources
+;;      '(
+;;        (:name pomodoro
+;;               :type http
+;;               :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
+;;        (:name smex                          ; a better (ido like) M-x
+;;               :after (progn
+;;                        (setq smex-save-file "~/.emacs.d/.smex-items")
+;;                        (global-set-key (kbd "M-x") 'smex)
+;;                        (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+;;        (:name dot-mode
+;;               :type git
+;;               :url "https://github.com/emacsmirror/dot-mode.git"
+;;               :features dot-mode)
+;;        (:name ein
+;;               :type github
+;;               :url "https://github.com/millejoh/emacs-ipython-notebook.git"
+;;               :depends (websocket request auto-complete)
+;;               :load-path ("lisp")
+;;               :submodule nil
+;;               :features ein2)
+;;        (:name pretty-mode
+;;               :type git
+;;               :url "https://github.com/mattharrison/pretty-mode.git"
+;;               :features pretty-mode)
+;;        (:name point-stack
+;;               ;; in el-get!!!
+;;               :after (progn
+;;                        (global-set-key '[(f6)] 'point-stack-push)
+;;                        (global-set-key '[(f7)] 'point-stack-pop)
+;;                        (global-set-key '[(f8)] 'point-stack-forward-stack-pop)))
+;;        ;; (:name tango-theme
+;;        ;;        :type git
+;;        ;;        :depends color-theme
+;;        ;;        :url "https://github.com/mattharrison/emacs-tango-theme.git"
+;;        ;;        :after (progn (if (eq window-system 'x)
+;;        ;;                          (color-theme-tango)
+;;
+;;        ;;                        (if (not (window-system))
+;;        ;;                            (color-theme-tty-dark))))
+;;        ;;        :features tango-theme
+;;        ;;        )
+;;        ;; (:name flymake-python
+;;        ;;        :type github
+;;        ;;        :pkgname "mattharrison/flymake-python"
+;;        ;;        :post-init (progn
+;;        ;;                 (add-hook 'find-file-hook 'flymake-find-file-hook)
+;;        ;;                 (when (load "flymake" t)
+;;        ;;                   (defun flymake-pylint-init ()
+;;        ;;                     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;        ;;                                        'flymake-create-temp-inplace))
+;;        ;;                            (local-file (file-relative-name
+;;        ;;                                         temp-file
+;;        ;;                                         (file-name-directory buffer-file-name))))
+;;        ;;                       (list "~/.emacs.d/el-get/flymake-python/pyflymake.py" (list local-file))))
+;;        ;;                   ;;     check path
+;;        ;;                   (add-to-list 'flymake-allowed-file-name-masks
+;;        ;;                                '("\\.py\\'" flymake-pylint-init)))))
+;;
+;;        (:name nose
+;;               :type git
+;;               :url "https://github.com/mattharrison/nose.git"
+;;               :after (progn ))
+;;
+;;        (:name sr-speedbar
+;;               :type emacswiki)
+;;        (:name idle-highlight-mode
+;;               :type git
+;;               :url "https://github.com/emacsmirror/idle-highlight-mode.git"
+;;               )
+;;        (:name protbuf
+;;               :type emacswiki
+;;               :features protbuf)
+;;        (:name typopunct
+;;               :type emacswiki
+;;               :features typopunct
+;;               :after (progn
+;;                        (typopunct-change-language 'english t)
+;;                        (defconst typopunct-ellipsis (decode-char 'ucs #x2026))
+;;                        (defconst typopunct-middot   (decode-char 'ucs #xB7)) ; or 2219
+;;                        (defun typopunct-insert-ellipsis-or-middot (arg)
+;;                          "Change three consecutive dots to a typographical ellipsis mark."
+;;                          (interactive "p")
+;;                          (cond
+;;                           ((and (= 1 arg)
+;;                                 (eq (char-before) ?^))
+;;                            (delete-char -1)
+;;                            (insert typopunct-middot))
+;;                           ((and (= 1 arg)
+;;                                 (eq this-command last-command)
+;;                                 ;; made python friendly (need 4 .'s for ...)
+;;                                 (looking-back "\\.\\.\\."))
+;;                            (replace-match "")
+;;                            (insert typopunct-ellipsis))
+;;                           (t
+;;                            (self-insert-command arg))))
+;;                        (define-key typopunct-map "." 'typopunct-insert-ellipsis-or-middot)
+;;
+;;                        (defadvice typopunct-insert-quotation-mark (around wrap-region activate)
+;;                          (let* ((lang (or (get-text-property (point) 'typopunct-language)
+;;                                           typopunct-buffer-language))
+;;                                 (omark (if single
+;;                                            (typopunct-opening-single-quotation-mark lang)
+;;                                          (typopunct-opening-quotation-mark lang)))
+;;                                 (qmark (if single
+;;                                            (typopunct-closing-single-quotation-mark lang)
+;;                                          (typopunct-closing-quotation-mark lang))))
+;;                            (cond
+;;                             (mark-active
+;;                              (let ((skeleton-end-newline nil)
+;;                                    (singleo (typopunct-opening-single-quotation-mark lang))
+;;                                    (singleq (typopunct-closing-single-quotation-mark lang)))
+;;                                (if (> (point) (mark))
+;;                                    (exchange-point-and-mark))
+;;                                (save-excursion
+;;                                  (while (re-search-forward (regexp-quote (string omark)) (mark) t)
+;;                                    (replace-match (regexp-quote (string singleo)) nil nil)))
+;;                                (save-excursion
+;;                                  (while (re-search-forward (regexp-quote (string qmark)) (mark) t)
+;;                                    (replace-match (regexp-quote (string singleq)) nil nil)))
+;;                                (skeleton-insert (list nil omark '_ qmark) -1)))
+;;                             ((looking-at (regexp-opt (list (string omark) (string qmark))))
+;;                              (forward-char 1))
+;;                             (t ad-do-it))))
+;;                        ;; C-q " gives a normal " (when in typopunct mode)
+;;                        ;; from iso-trans.el
+;;                        ;; ‘C-x 8 SPC gives a hard space.
+;;                        ;; ‘C-x 8 o gives ° (degree symbol).
+;;                        ;; ‘C-x 8 ~ ~ gives ¬.
+;;                        ;; ‘C-x 8 1 / 2 gives ½.
+;;                        ;; ‘C-x 8 * C gives ©.
+;;                        ;; ‘C-x 8 ^ 1 gives superscript ¹, ‘C-x 8 ^ 2’ gives superscript ², and ‘C-x 8 ^ 3’ gives superscript ³.
+;;
+;;                        ))
+;;
+;;        ;; javascript stuff
+;;        ;; don't use yegge's use better indent version
+;;        (:name js2-mode
+;;               :type git
+;;               :url "https://github.com/mooz/js2-mode.git"
+;;               :compile "js2-mode.el"
+;;               :post-init (progn
+;;                            (autoload 'js2-mode "js2-mode" nil t)))
+;;        (:name writegood-mode
+;;               :type git
+;;               :url "https://github.com/bnbeckwith/writegood-mode.git"
+;;               :features writegood-mode )
+;;        (:name nyan-mode
+;;               :website "http://nyan-mode.buildsomethingamazing.com/"
+;;               :description "cat indicator"
+;;               :type git
+;;               :url "https://github.com/TeMPOraL/nyan-mode"
+;;               :features nyan-mode)
+;;        (:name yasnippet
+;;               ;;:url "https://github.com/mattharrison/yasnippet.git")
+;;               :pkgname "mattharrison/yasnippet")
+;;        (:name clojure-snippets
+;;               :type git
+;;               :url "https://github.com/mpenet/clojure-snippets"
+;;               ;:pkgname "mpenet/clojure-snippets"
+;;               )
+;;
+;;        ;; (:name pycoverage
+;;        ;;        :type git
+;;        ;;        :url "https://github.com/mattharrison/pycoverage.el.git"
+;;        ;;        :load "pycov2.el"
+;;        ;;        :features pycov2)
+;;        ;; (:name pycoverage
+;;        ;; 	  :description "Coverage.py integration with emacs"
+;;        ;; 	  :type github
+;;        ;; 	  :pkgname "mattharrison/pycoverage"
+;;        ;; 	  :features pycov2)
+;;        ))
+;;
+;;
 
 
 
@@ -216,7 +236,8 @@
 	 color-theme  ;; borked
 	 ;; csv-mode
 	 escreen                ; screen for emacs, C-\ C-h
-     flycheck
+     ;;flycheck
+     exec-path-from-shell  ; make emacs see brew env (update /etc/paths)
 	 full-ack
      guide-key
      popwin
@@ -249,10 +270,12 @@
 
 (el-get 'sync my-packages)
 
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
 ;; Write backup files to own directory
 (setq backup-directory-alist
-      `(("." . ,(expand-file-name
-                 (concat user-emacs-directory ".emacs-backups")))))
+      `(("." . ,(expand-file-name "~/.emacs-backups"))))
 
 ;; Make backups of files, even when they're in version control
 (setq vc-make-backup-files t)
