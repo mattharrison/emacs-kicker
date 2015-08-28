@@ -346,7 +346,7 @@ files are placed.
 
 ;; update avy keys to norman...
 (setq avy-keys-alist
-      `((avy-goto-char . (?t ?e ?s ?a))
+      `((avy-goto-char . (?t ?e ?s ?a ?n ?i))
         (avy-goto-word-1 . (?t ?e ?s ?a))))
 
 ;; web-mode
