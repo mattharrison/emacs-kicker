@@ -38,8 +38,23 @@ files are placed.
     (eval-print-last-sexp)))
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
+;; (el-get 'sync)
 
+
+
+(setq el-get-sources
+     '(
+       (:name pomodoro
+              :type http
+              :url "http://kanis.fr/hg/lisp/ivan/pomodoro.el")
+ ;;     (;;el-get-bundle pycov2
+ ;;      :name pycov2
+ ;;       :url "https://github.com/mattharrison/pycoverage.el.git"
+ ;;       ;; :features pycov2
+ ;; ;; :load "pycov2.el"
+ ;;       )
+       )
+)
 ;;(setq el-get-sources
 ;;      '(
 ;;        (:name pomodoro
@@ -217,7 +232,6 @@ files are placed.
 ;;
 
 
-
 (setq my-packages
       (append
        '(
@@ -228,8 +242,9 @@ files are placed.
 	 ;;predictive
 	 ;;python
 	 ;;yasnippet
-         ace-jump-mode
-	 auto-complete
+         ;;ace-jump-mode
+         auto-complete
+         avy
 	 ;; color-theme  ;; borked
      cider
      clojure-mode
@@ -254,6 +269,7 @@ files are placed.
 	 ;; monky
 	 perspective
 	 ;; python-mode
+	 ;; pycov2
 	 python-pep8
      pyvenv
      rainbow-mode         ; pretty css colors, etc
@@ -263,10 +279,23 @@ files are placed.
      smooth-scrolling
      sudo-save
      switch-window          ; take over C-x o
+     web-mode
      wgrep
      ;;undo-tree
      )
        (mapcar 'el-get-source-name el-get-sources)))
+
+
+
+(el-get-bundle! pycov2 in  github:mattharrison/pycoverage.el
+  :features pycov2
+;;        ;; (:name pycoverage
+;;        ;;        :type git
+;;        ;;        :url "https://github.com/mattharrison/pycoverage.el.git"
+;;        ;;        :load "pycov2.el"
+;;        ;;        :features pycov2)
+
+  )
 
 (el-get 'sync my-packages)
 
@@ -302,17 +331,32 @@ files are placed.
 ;; manager or do M-x kill-emacs.  Don't need a nice shortcut for a once a
 ;; week (or day) action.
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
-
-
 (global-set-key (kbd "C-x o") 'switch-window)
 
 ;; (global-set-key (kbd "M-n") 'next-error)
 ;; (global-set-key (kbd "M-p") 'previous-error)
 
 ;; C-u C-c SPC to go to non/any char
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-(define-key global-map (kbd "<C-return>") 'ace-jump-mode)
-(define-key global-map (kbd "<C-s-return>") 'ace-jump-mode)
+;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;; (define-key global-map (kbd "<C-return>") 'ace-jump-mode)
+;; (define-key global-map (kbd "<C-s-return>") 'ace-jump-mode)
+
+(global-set-key (kbd "<C-return>") 'avy-goto-char)
+(global-set-key (kbd "M-g g") 'avy-goto-line)
+
+;; update avy keys to norman...
+(setq avy-keys-alist
+      `((avy-goto-char . (?t ?e ?s ?a))
+        (avy-goto-word-1 . (?t ?e ?s ?a))))
+
+;; web-mode
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
 
 ;; guide-key
   (setq guide-key/guide-key-sequence t)
@@ -1045,3 +1089,5 @@ and choosing a simple theme."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("1bb9af3baf150cc362bdd1267abc199a6c3975357cfcf57550cbc63df1823265" default))))
+
+(setq pycov2-cov2emacs-cmd "PYTHONPATH=~/.env/lib/python2.7/site-packages:~/.emacs.d/el-get/pycoverage.el/cov2emacs ~/.emacs.d/el-get/pycoverage.el/cov2emacs/bin/cov2emacs")
